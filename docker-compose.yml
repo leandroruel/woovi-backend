@@ -6,6 +6,7 @@ services:
       - '${NODE_PORT}:${NODE_PORT}'
     volumes:
       - .:/app
+      - /app/node_modules
     environment:
       - NODE_ENV=development
     env_file:

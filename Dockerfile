@@ -1,4 +1,4 @@
-FROM node:21
+FROM node:21-alpine
 
 # Cria o diretório de trabalho no contêiner
 WORKDIR /app
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Instala as dependências
-RUN yarn
+RUN npm install -g npm && npm install
 
 # Expõe a porta 4000
 EXPOSE 4000
