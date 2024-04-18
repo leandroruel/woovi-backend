@@ -4,15 +4,29 @@ import {
   GraphQLList,
   GraphQLObjectType,
   GraphQLSchema,
-  GraphQLString
+  GraphQLString,
+  GraphQLScalarType,
+  Kind,
+  GraphQLScalarSerializer,
+  GraphQLID,
+  GraphQLInputObjectType
 } from 'graphql'
 import { userResolver } from './resolvers/user-resolver'
 
 const GenderEnum = new GraphQLEnumType({
   name: 'GenderEnum',
   values: {
-    MALE: { value: 'male' },
-    FEMALE: { value: 'female' }
+    MALE: { value: 'Male' },
+    FEMALE: { value: 'Female' }
+  }
+})
+
+const UserType = new GraphQLObjectType({
+  name: 'User',
+  fields: {
+    _id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    email: { type: GraphQLString }
   }
 })
 
@@ -21,29 +35,13 @@ export const schema = new GraphQLSchema({
     name: 'Query',
     fields: {
       users: {
-        type: new GraphQLList(
-          new GraphQLObjectType({
-            name: 'Users',
-            fields: {
-              id: { type: GraphQLString },
-              name: { type: GraphQLString },
-              email: { type: GraphQLString }
-            }
-          })
-        ),
+        type: new GraphQLList(UserType),
         resolve: userResolver.Query.users
       },
       user: {
-        type: new GraphQLObjectType({
-          name: 'User',
-          fields: {
-            id: { type: GraphQLString },
-            name: { type: GraphQLString },
-            email: { type: GraphQLString }
-          }
-        }),
+        type: UserType,
         args: {
-          id: { type: GraphQLString }
+          _id: { type: GraphQLID }
         },
         resolve: userResolver.Query.user
       }
@@ -53,25 +51,16 @@ export const schema = new GraphQLSchema({
     name: 'Mutation',
     description: 'Root mutation',
     fields: {
-      createUser: {
+      create: {
         type: new GraphQLObjectType({
           name: 'CreateUser',
           description: 'Create a new user',
           fields: {
-            id: { type: GraphQLString },
             name: { type: GraphQLString },
             email: { type: GraphQLString },
             birthdate: { type: GraphQLString },
-            password: {
-              type: new GraphQLObjectType({
-                name: 'Password',
-                fields: {
-                  hash: { type: GraphQLString },
-                  salt: { type: GraphQLString }
-                }
-              })
-            },
-            taxId: { type: GraphQLString },
+            password: { type: GraphQLString },
+            tax_id: { type: GraphQLString },
             gender: {
               type: GenderEnum
             },
@@ -80,13 +69,15 @@ export const schema = new GraphQLSchema({
         }),
         args: {
           name: { type: GraphQLString },
-          email: { type: GraphQLString },
+          email: { type: GraphQLString, description: 'Email' },
           birthdate: { type: GraphQLString },
           password: { type: GraphQLString },
-          taxId: { type: GraphQLString },
+          tax_id: { type: GraphQLString },
           gender: { type: GenderEnum }
         },
-        resolve: userResolver.Mutation.createUser
+        resolve: (_, input) => {
+          userResolver.Mutation.createUser(null, { input })
+        }
       }
     }
   })

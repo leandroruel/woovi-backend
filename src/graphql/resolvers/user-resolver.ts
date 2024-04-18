@@ -1,4 +1,5 @@
 import User from '@/models/User'
+import UserController from '@/controllers/user-controller'
 
 export const userResolver = {
   Query: {
@@ -11,8 +12,8 @@ export const userResolver = {
   },
   Mutation: {
     async createUser(_: any, { input }: any) {
-      console.log('user being created', input)
-      return await User.create(input)
+      UserController.create(input)
+      // return await User.create(input)
     },
     async updateUser(_: any, { id, input }: any) {
       return await User.findByIdAndUpdate(id, input, { new: true })

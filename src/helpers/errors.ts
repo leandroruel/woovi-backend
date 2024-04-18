@@ -101,7 +101,7 @@ export const formatGraphQLResult = (result: ExecutionResult) => {
   const formattedResult: ExecutionResult = {
     data: result.data
   }
-
+  console.log(result)
   if (result.errors) {
     formattedResult.errors = result.errors.map((error) => {
       console.log(error)

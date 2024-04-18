@@ -15,8 +15,9 @@ import Mongoose from 'mongoose'
 import { schema } from './graphql/schema'
 import router from './routes'
 import { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_URL } from './config'
-import { randomBytes } from 'crypto'
 import { formatGraphQLResult } from '@/helpers/errors'
+import { errorHandlingMiddleware } from '@/middlewares/error-handling-middleware'
+import { validationMiddleware } from '@/middlewares/validation-middleware'
 
 const app = new Koa()
 
@@ -49,6 +50,8 @@ app.use(async (ctx) => {
     query: ctx.request.query
   }
 
+  console.log('variables input', request.body)
+
   if (shouldRenderGraphiQL(request)) {
     ctx.body = renderGraphiQL()
   } else {
@@ -74,6 +77,10 @@ app.use(
     exposeHeaders: ['X-Request-Id']
   })
 )
+
+app.use((ctx, next) => validationMiddleware(ctx.request.body.query))
+
+app.use(errorHandlingMiddleware)
 
 // Routes
 app.use(router.routes())
