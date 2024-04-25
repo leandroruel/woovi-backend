@@ -1,0 +1,43 @@
+enum UserEnum {
+  Male
+  Female
+}
+
+type User {
+  id: ID!
+  taxId: String!
+  name: String!
+  email: String!
+  password: String!
+  birthdate: String!
+  gender: UserEnum!
+}
+
+input CreateUserPayload {
+  name: String!
+  email: String!
+  password: String!
+  taxId: String!
+  birthdate: String!
+  gender: UserEnum!
+}
+
+input UpdateUserPayload {
+  name: String
+  email: String
+  password: String
+  taxId: String
+  birthdate: String
+  gender: UserEnum
+}
+
+type Query {
+  user(id: ID!): User
+  users: [User!]
+}
+
+type Mutation {
+  createUser(user: CreateUserPayload!): User
+  updateUser(user: UpdateUserPayload!, id: ID!): User
+  deleteUser(id: ID!): Boolean
+}
