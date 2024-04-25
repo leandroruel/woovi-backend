@@ -3,6 +3,11 @@ enum UserEnum {
   Female
 }
 
+enum UserRoleEnum {
+  Admin
+  User
+}
+
 type User {
   id: ID!
   taxId: String!
@@ -11,6 +16,7 @@ type User {
   password: String!
   birthdate: String!
   gender: UserEnum!
+  role: UserRoleEnum!
 }
 
 input CreateUserPayload {
@@ -20,6 +26,7 @@ input CreateUserPayload {
   taxId: String!
   birthdate: String!
   gender: UserEnum!
+  role: UserRoleEnum!
 }
 
 input UpdateUserPayload {
@@ -29,6 +36,7 @@ input UpdateUserPayload {
   taxId: String
   birthdate: String
   gender: UserEnum
+  role: UserRoleEnum
 }
 
 type Query {

@@ -22,6 +22,7 @@ export type CreateUserPayload = {
   gender: UserEnum;
   name: Scalars['String']['input'];
   password: Scalars['String']['input'];
+  role: UserRoleEnum;
   taxId: Scalars['String']['input'];
 };
 
@@ -65,6 +66,7 @@ export type UpdateUserPayload = {
   gender?: InputMaybe<UserEnum>;
   name?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
+  role?: InputMaybe<UserRoleEnum>;
   taxId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -76,12 +78,18 @@ export type User = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   password: Scalars['String']['output'];
+  role: UserRoleEnum;
   taxId: Scalars['String']['output'];
 };
 
 export enum UserEnum {
   Female = 'Female',
   Male = 'Male'
+}
+
+export enum UserRoleEnum {
+  Admin = 'Admin',
+  User = 'User'
 }
 
 export type AdditionalEntityFields = {
@@ -169,6 +177,7 @@ export type ResolversTypes = {
   UpdateUserPayload: UpdateUserPayload;
   User: ResolverTypeWrapper<User>;
   UserEnum: UserEnum;
+  UserRoleEnum: UserRoleEnum;
   AdditionalEntityFields: AdditionalEntityFields;
 };
 
@@ -250,6 +259,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  role?: Resolver<ResolversTypes['UserRoleEnum'], ParentType, ContextType>;
   taxId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

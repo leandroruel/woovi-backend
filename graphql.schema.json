@@ -105,6 +105,22 @@
             "deprecationReason": null
           },
           {
+            "name": "role",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "UserRoleEnum",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "taxId",
             "description": null,
             "type": {
@@ -386,6 +402,18 @@
             "deprecationReason": null
           },
           {
+            "name": "role",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "UserRoleEnum",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "taxId",
             "description": null,
             "type": {
@@ -504,6 +532,22 @@
             "deprecationReason": null
           },
           {
+            "name": "role",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "UserRoleEnum",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "taxId",
             "description": null,
             "args": [],
@@ -541,6 +585,29 @@
           },
           {
             "name": "Male",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "UserRoleEnum",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "Admin",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "User",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
