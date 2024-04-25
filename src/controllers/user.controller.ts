@@ -2,7 +2,7 @@ import User from '@/models/User'
 import { encryptPassword } from '@/helpers/password'
 import { Types } from 'mongoose'
 import { GraphQLError } from 'graphql'
-import { emailExists } from '@/services/user.service'
+import { emailExists, createUser } from '@/services/user.service'
 import UsersValidate from '@/validators/user-schema'
 import { EMAIL_ALREADY_EXISTS } from '@/helpers/constants'
 
@@ -27,19 +27,17 @@ export const create = async (body: any) => {
     })
   }
 
-  const encryptedPassword = await encryptPassword(body.user.password)
+  const encryptedPassword = String(await encryptPassword(body.user.password))
 
-  const newUser = await User.create({
+  return await createUser({
     name: body.user.name,
     password: encryptedPassword,
     email: body.user.email,
     gender: body.user.gender,
-    role: new Types.ObjectId(body.user.role),
+    role: body.user.role,
     birthdate: body.user.birthdate,
-    tax_id: body.user.taxId
+    taxId: body.user.taxId
   })
-
-  return newUser
 }
 
 export default { create }
