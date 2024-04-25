@@ -33,7 +33,7 @@ const userSchema = new Schema(
       type: Date,
       required: true
     },
-    role: { type: String, enum: ['Admin', 'User'], default: 'User'}
+    role: { type: String, enum: ['Admin', 'User'], default: 'User' }
   },
   { timestamps: true, collation: { locale: 'pt', strength: 2 } }
 )
