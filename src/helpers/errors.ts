@@ -1,4 +1,5 @@
 import { ExecutionResult, GraphQLError, GraphQLErrorOptions } from 'graphql'
+import { MongooseError } from 'mongoose'
 
 interface Error {
   errorCode?: any
@@ -73,6 +74,7 @@ export const getErrorByStatusCode = (statusCode: number) => {
 }
 
 export const errorHandling = (err: Error) => {
+  console.log('BAD REQUEST ERROR CODE', err.code, err.errorCode)
   if (err.errorCode) {
     return err
   }
@@ -97,29 +99,11 @@ export const errorHandling = (err: Error) => {
   return errorLib(err.message || err.toString())
 }
 
-export const formatGraphQLResult = (result: ExecutionResult) => {
-  const formattedResult: ExecutionResult = {
-    data: result.data
-  }
-  console.log(result)
-  if (result.errors) {
-    formattedResult.errors = result.errors.map((error) => {
-      console.log(error)
-      const errorMessage = error.message || 'Sorry, something went wrong'
-
-      return new GraphQLError(
-        errorMessage,
-        error.nodes,
-        error.source,
-        error.positions,
-        error.path,
-        null,
-        {
-          timestamp: Date.now()
-        }
-      )
-    })
+export const formatGraphQLError = (error: GraphQLError) => {
+  if (error && error.name === 'MongoServerError') {
+    const errorMessage = error.message || 'Sorry, something went wrong'
+    throw new GraphQLError(errorMessage, error)
   }
 
-  return formattedResult
+  throw new GraphQLError(error.message, error)
 }
