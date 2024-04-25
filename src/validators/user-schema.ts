@@ -1,4 +1,3 @@
-import { UserRoleEnum } from '@/generated/graphql'
 import Joi from 'joi'
 
 export default Joi.object().keys({

@@ -1,5 +1,5 @@
-import Joi, { Schema, ValidationResult } from 'joi'
 import { BadRequest } from '@/helpers/errors'
+import Joi, { Schema, ValidationResult } from 'joi'
 import { Middleware } from 'koa'
 
 interface ValidationObject {

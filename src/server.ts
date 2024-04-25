@@ -1,11 +1,11 @@
 import Koa from 'koa'
-import logger from 'koa-logger'
 import { koaBody } from 'koa-body'
+import logger from 'koa-logger'
 
-import Mongoose, { ConnectOptions } from 'mongoose'
-import router from './routes'
-import { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_URL } from './config'
 import { errorHandlingMiddleware } from '@/middlewares/error-handling-middleware'
+import Mongoose, { ConnectOptions } from 'mongoose'
+import { MONGODB_PASSWORD, MONGODB_URL, MONGODB_USERNAME } from './config'
+import router from './routes'
 
 const app = new Koa()
 

@@ -1,5 +1,5 @@
-import User from '@/models/User'
 import { CreateUserPayload } from '@/generated/graphql'
+import User from '@/models/User'
 
 /**
  * Check if email exists on database

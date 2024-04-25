@@ -1,11 +1,9 @@
-import User from '@/models/User'
-import { encryptPassword } from '@/helpers/password'
-import { Types } from 'mongoose'
-import { GraphQLError } from 'graphql'
-import { emailExists, createUser } from '@/services/user.service'
-import UsersValidate from '@/validators/user-schema'
-import { EMAIL_ALREADY_EXISTS } from '@/helpers/constants'
 import { MutationCreateUserArgs } from '@/generated/graphql'
+import { EMAIL_ALREADY_EXISTS } from '@/helpers/constants'
+import { encryptPassword } from '@/helpers/password'
+import { createUser, emailExists } from '@/services/user.service'
+import UsersValidate from '@/validators/user-schema'
+import { GraphQLError } from 'graphql'
 
 /**
  *  Create a new user

@@ -1,5 +1,4 @@
-import { ExecutionResult, GraphQLError, GraphQLErrorOptions } from 'graphql'
-import { MongooseError } from 'mongoose'
+import { GraphQLError } from 'graphql'
 
 interface Error {
   errorCode?: any

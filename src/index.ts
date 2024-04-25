@@ -1,14 +1,14 @@
-import app from 'server'
-import http from 'http'
 import cors from '@koa/cors'
 import dotenv from 'dotenv'
+import http from 'http'
+import app from 'server'
 import { NODE_PORT } from './config'
 
 import { ApolloServer } from '@apollo/server'
-import typeDefs from './graphql/typeDefs'
-import resolvers from './graphql/resolvers'
-import { koaMiddleware } from '@as-integrations/koa'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
+import { koaMiddleware } from '@as-integrations/koa'
+import resolvers from './graphql/resolvers'
+import typeDefs from './graphql/typeDefs'
 
 dotenv.config()
 

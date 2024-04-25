@@ -1,5 +1,5 @@
-import User from '@/models/User'
 import UserController from '@/controllers/user.controller'
+import User from '@/models/User'
 
 import { GraphQLError } from 'graphql'
 
