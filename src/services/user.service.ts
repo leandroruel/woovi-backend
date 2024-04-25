@@ -16,6 +16,6 @@ export const emailExists = async (email: string): Promise<Boolean | null> =>
  * @returns
  */
 export const createUser = async (body: CreateUserPayload) => {
-  const user = await User.create(body)
+  const user = await User.create({ ...body, tax_id: body.taxId })
   return user
 }

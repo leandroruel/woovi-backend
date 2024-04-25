@@ -1,3 +1,4 @@
+import { UserRoleEnum } from '@/generated/graphql'
 import Joi from 'joi'
 
 export default Joi.object().keys({
@@ -13,6 +14,7 @@ export default Joi.object().keys({
       )
       .required(),
     gender: Joi.string().valid('Male', 'Female').required(),
-    birthdate: Joi.date().required()
+    birthdate: Joi.date().required(),
+    role: Joi.string().valid('Admin', 'User').required()
   })
 })

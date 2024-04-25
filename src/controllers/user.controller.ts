@@ -21,11 +21,8 @@ export const create = async (body: any) => {
     throw new GraphQLError(error)
   }
 
-  if (await emailExists(body.user.email)) {
-    throw new GraphQLError(EMAIL_ALREADY_EXISTS, {
-      extensions: { code: 404, stacktrace: null }
-    })
-  }
+  if (await emailExists(body.user.email))
+    throw new GraphQLError(EMAIL_ALREADY_EXISTS)
 
   const encryptedPassword = String(await encryptPassword(body.user.password))
 
