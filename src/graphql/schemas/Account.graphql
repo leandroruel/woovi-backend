@@ -1,0 +1,47 @@
+# Type: GraphQL Schema
+# A Date scalar type that represents a date in the format of "YYYY-MM-DD"
+scalar Date
+
+# Type: GraphQL Schema
+# A ObjectID scalar type that represents a unique identifier
+scalar ObjectID
+
+# Type: GraphQL Schema
+# Description: Account schema
+type Account {
+  idempotencyId: String!
+  accountNumber: String!
+  userId: ObjectID!
+  balance: Float!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+# Type: GraphQL Schema
+# Description: Create account payload
+input CreateAccountPayload {
+  idempotencyId: String!
+  accountNumber: String!
+  userId: ObjectID!
+  balance: Float!
+}
+
+# Type: GraphQL Schema
+# Description: Update account payload
+input UpdateAccountPayload {
+  idempotencyId: String
+  accountNumber: String
+  userId: ObjectID
+  balance: Float
+}
+
+type Query {
+  account(userId: ObjectID!): Account
+  accounts: [Account!]
+}
+
+type Mutation {
+  createAccount(account: CreateAccountPayload!): Account
+  updateAccount(account: UpdateAccountPayload!, userId: ObjectID!): Account
+  deleteAccount(id: ObjectID!): Boolean
+}

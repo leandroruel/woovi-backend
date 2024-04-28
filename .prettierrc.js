@@ -4,8 +4,7 @@ const config = {
   semi: false,
   tabWidth: 2,
   trailingComma: 'none',
-  plugins: ['prettier-plugin-organize-imports'],
-  removeUnused: true
+  plugins: ['prettier-plugin-organize-imports']
 }
 
 export default config

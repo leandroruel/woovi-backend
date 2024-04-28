@@ -12,6 +12,14 @@ const config: CodegenConfig = {
     './graphql.schema.json': {
       plugins: ['introspection']
     }
+  },
+  config: {
+    scalars: {
+      DateTime: 'Date',
+      UUID: 'string',
+      ObjectID: 'string',
+      JSON: 'Record<string, any>'
+    }
   }
 }
 
