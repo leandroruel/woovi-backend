@@ -2,7 +2,6 @@ import Koa from 'koa'
 import { koaBody } from 'koa-body'
 import logger from 'koa-logger'
 
-import { errorHandlingMiddleware } from '@/middlewares/error-handling-middleware'
 import Mongoose, { ConnectOptions } from 'mongoose'
 import { MONGODB_PASSWORD, MONGODB_URL, MONGODB_USERNAME } from './config'
 import router from './routes'
@@ -28,8 +27,6 @@ Mongoose.connection.on('error', (error) => {
 
 // Body parser
 app.use(koaBody({ multipart: true }))
-
-app.use(errorHandlingMiddleware)
 
 // Routes
 app.use(router.routes())

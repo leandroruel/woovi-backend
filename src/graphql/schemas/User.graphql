@@ -1,13 +1,27 @@
+# Type: GraphQL Schema
+# Description: Date scalar type is a custom scalar type that represents a date in the format "YYYY-MM-DD".
+scalar Date
+
+# Type: GraphQL Schema
+# Description: @isLoggedin directive is a custom directive that checks if the user is logged in
+directive @auth(requires: UserRoleEnum = Admin) on OBJECT | FIELD_DEFINITION
+
+# Type: GraphQL Schema
+# UserEnum is an enum type that represents a user gender
 enum UserEnum {
   Male
   Female
 }
 
+# Type: GraphQL Schema
+# UserRoleEnum is an enum type that represents a user role
 enum UserRoleEnum {
   Admin
   User
 }
 
+# Type: GraphQL Schema
+# User is an object type that represents a user
 type User {
   id: ID!
   taxId: String!
@@ -17,8 +31,11 @@ type User {
   birthdate: String!
   gender: UserEnum!
   role: UserRoleEnum!
+  createdAt: Date!
+  updatedAt: Date!
 }
 
+# AuthUser is an object type that represents a user with a token
 type AuthUser {
   user: User!
   token: String!
@@ -51,7 +68,7 @@ type Query {
 
 type Mutation {
   createUser(user: CreateUserPayload!): AuthUser
-  updateUser(user: UpdateUserPayload!, id: ID!): User
+  updateUser(user: UpdateUserPayload!, id: ID!): User @auth(requires: User)
   deleteUser(id: ID!): Boolean
   login(email: String!, password: String!): AuthUser
 }

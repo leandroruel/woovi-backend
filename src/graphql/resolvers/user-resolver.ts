@@ -20,11 +20,14 @@ const userResolver = {
         throw new GraphQLError(error)
       }
     },
-    async updateUser(_: any, { id, input }: any) {
-      return await User.findByIdAndUpdate(id, input, { new: true })
+    async updateUser(_: any, args: any) {
+      return await UserController.update(args)
     },
     async deleteUser(_: any, { id }: any) {
       return await User.findByIdAndDelete(id)
+    },
+    async login(_: any, args: any, ctx: any) {
+      return await UserController.login(args)
     }
   },
   User: {

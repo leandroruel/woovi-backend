@@ -1,9 +1,10 @@
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
+import { AuthenticationError } from './errors'
 dotenv.config()
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret'
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || 3600
+export const JWT_SECRET = process.env.JWT_SECRET || 'secret'
+export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || 3600
 
 /**
  * Extracts the expiration date from a JWT token
@@ -39,5 +40,9 @@ export const signToken = (data: IData): string | void => {
  * @returns
  */
 export const verifyToken = (token: string) => {
-  return jwt.verify(token, JWT_SECRET)
+  try {
+    return jwt.verify(token, JWT_SECRET)
+  } catch (error: any) {
+    throw new AuthenticationError(error.message || error)
+  }
 }

@@ -1,4 +1,8 @@
-import { MutationCreateUserArgs, MutationLoginArgs } from '@/generated/graphql'
+import {
+  MutationCreateUserArgs,
+  MutationLoginArgs,
+  MutationUpdateUserArgs
+} from '@/generated/graphql'
 import {
   DOCUMENT_ALREADY_EXISTS,
   EMAIL_ALREADY_EXISTS
@@ -13,9 +17,10 @@ import {
   createUser,
   documentExists,
   emailExists,
-  loginUser
+  loginUser,
+  updateUser
 } from '@/services/user.service'
-import UsersValidate from '@/validators/user-schema'
+import { validateUserCreate } from '@/validators/user-schema'
 import { GraphQLError } from 'graphql'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -27,7 +32,7 @@ import { v4 as uuidv4 } from 'uuid'
 export const create = async (args: MutationCreateUserArgs) => {
   const { password, ...rest } = args.user
 
-  const { error } = await UsersValidate.validateAsync(args, {
+  const { error } = await validateUserCreate.validateAsync(args, {
     abortEarly: false
   })
 
@@ -60,8 +65,41 @@ export const create = async (args: MutationCreateUserArgs) => {
 
 export const login = async (args: MutationLoginArgs) => {
   const { email, password } = args
-
+  console.log(args)
   return await loginUser({ email, password })
 }
 
-export default { create }
+export const update = async (args: MutationUpdateUserArgs) => {
+  const {
+    id,
+    user: { password, ...rest }
+  } = args
+
+  // const { error } = await validateUserUpdate.validateAsync(args, {
+  //   abortEarly: false
+  // })
+
+  // if (error) throw new GraphQLError(error)
+
+  // if (args.user.email && (await emailExists(args.user.email)))
+  //   throw new GraphQLError(EMAIL_ALREADY_EXISTS)
+
+  // if (args.user.taxId && (await documentExists(args.user.taxId)))
+  //   throw new GraphQLError(DOCUMENT_ALREADY_EXISTS)
+
+  if (password) {
+    // Criptografar a senha
+    const encryptedPassword = String(await encryptPassword(password))
+    // Atualizar os campos, incluindo a senha criptografada
+    const user = await updateUser(id, { ...rest, password: encryptedPassword })
+    return { ...user, password: encryptedPassword }
+  }
+
+  const user = await updateUser(id, rest)
+
+  if (!user) return null
+
+  return user
+}
+
+export default { create, update, login }

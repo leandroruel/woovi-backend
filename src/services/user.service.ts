@@ -1,8 +1,13 @@
-import { CreateUserPayload, MutationLoginArgs } from '@/generated/graphql'
-import { INVALID_PASSWORD } from '@/helpers/constants'
+import {
+  CreateUserPayload,
+  MutationLoginArgs,
+  UpdateUserPayload
+} from '@/generated/graphql'
+import { INVALID_PASSWORD, USER_NOT_FOUND } from '@/helpers/constants'
 import { signToken } from '@/helpers/jwt'
 import { verifyPassword } from '@/helpers/password'
-import User from '@/models/User'
+import UserModel from '@/models/User'
+import { GraphQLError } from 'graphql'
 
 /**
  * Check if email exists on database
@@ -11,7 +16,7 @@ import User from '@/models/User'
  * @example await emailExists('jhon.doe@company.com')
  */
 export const emailExists = async (email: string): Promise<Boolean> =>
-  Boolean(await User.exists({ email }))
+  Boolean(await UserModel.exists({ email }))
 
 /**
  * Check if document exists on database
@@ -20,33 +25,50 @@ export const emailExists = async (email: string): Promise<Boolean> =>
  * @example await documentExists('1234567890')
  */
 export const documentExists = async (taxId: string): Promise<Boolean> =>
-  Boolean(await User.exists({ tax_id: taxId }))
+  Boolean(await UserModel.exists({ tax_id: taxId }))
 
 /**
  * Create a new user
  * @param body {Object} - user data
  * @returns
  */
-export const createUser = async (body: CreateUserPayload) => {
-  const user = await User.create({ ...body, tax_id: body.taxId })
-  return user
-}
+export const createUser = async (body: CreateUserPayload) =>
+  await UserModel.create({ ...body, tax_id: body.taxId })
+
+/**
+ *
+ * @param id {string} - user id
+ * @param input {Object} - user data
+ * @returns {Promise<Object>}
+ */
+export const updateUser = async (
+  id: string,
+  input: UpdateUserPayload
+): Promise<object | null> =>
+  await UserModel.findByIdAndUpdate(id, input, {
+    new: true
+  })
 
 export const loginUser = async (args: MutationLoginArgs) => {
   const { email, password } = args
 
-  const user = await User.findOne({ email })
+  const user = await UserModel.findOne({ email })
 
-  if (user) {
-    const isValidPassword = await verifyPassword(user.password, password)
+  if (!user)
+    throw new GraphQLError(USER_NOT_FOUND, {
+      extensions: { code: 'USER_NOT_FOUND' }
+    })
 
-    if (!isValidPassword) {
-      throw new Error(INVALID_PASSWORD)
-    }
+  const isValidPassword = await verifyPassword(password, user.password)
 
-    return {
-      token: signToken({ userId: user.id }),
-      user
-    }
+  if (!isValidPassword) {
+    throw new GraphQLError(INVALID_PASSWORD, {
+      extensions: { code: 'INVALID_PASSWORD' }
+    })
+  }
+
+  return {
+    token: signToken({ userId: user.id }),
+    user
   }
 }

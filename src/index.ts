@@ -4,9 +4,12 @@ import http from 'http'
 import app from 'server'
 import { NODE_PORT } from './config'
 
+import authDirective from '@/graphql/directives'
+import { getUser } from '@/helpers/auth'
 import { ApolloServer } from '@apollo/server'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import { koaMiddleware } from '@as-integrations/koa'
+import { makeExecutableSchema } from '@graphql-tools/schema'
 import resolvers from './graphql/resolvers'
 import typeDefs from './graphql/typeDefs'
 
@@ -16,10 +19,19 @@ const EXTERNAL_ENDPOINT = String(process.env.GRAPHQL_URL)
 
 async function server({ typeDefs, resolvers }: any) {
   const httpServer = http.createServer()
+  const { authDirectiveTypeDefs, authDirectiveTransformer } = authDirective(
+    'auth',
+    getUser
+  )
+  const schema = makeExecutableSchema({
+    typeDefs: [typeDefs, authDirectiveTypeDefs],
+    resolvers
+  })
+
+  const schemaWithAuthDirective = authDirectiveTransformer(schema)
 
   const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema: schemaWithAuthDirective,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     introspection: true
   })
@@ -30,7 +42,9 @@ async function server({ typeDefs, resolvers }: any) {
 
   app.use(
     koaMiddleware(apolloServer, {
-      context: async ({ ctx }) => ({ token: ctx.headers.token })
+      context: async ({ ctx }) => ({
+        token: ctx.headers.authorization
+      })
     })
   )
 
