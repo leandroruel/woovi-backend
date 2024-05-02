@@ -1,4 +1,4 @@
-import { verifyToken } from './jwt'
+import { decodeToken, verifyToken } from './jwt'
 
 /**
  * Get user from token inside a context
@@ -7,13 +7,17 @@ import { verifyToken } from './jwt'
  */
 export const getUser = (token: string) => {
   if (!token) return { hasRole: () => false }
-
   const roles = ['User', 'Admin']
-  const decodedToken = verifyToken(token.replace('Bearer ', '')) as any
+  const decodedToken = decodeToken(token)
+  const verifiedToken = verifyToken(
+    token.replace('Bearer ', ''),
+    decodedToken?.aud,
+    decodedToken?.userId
+  ) as any
 
   return {
     hasRole: (role: string) => {
-      const tokenIndex = roles.indexOf(decodedToken.role)
+      const tokenIndex = roles.indexOf(verifiedToken.role)
       const roleIndex = roles.indexOf(role)
       return roleIndex >= 0 && tokenIndex >= roleIndex
     }

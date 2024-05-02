@@ -76,7 +76,7 @@ export const loginUser = async (args: MutationLoginArgs): Promise<Object> => {
     })
   }
 
-  const token = signToken({ userId: user.id }) || ''
+  const token = signToken({ userId: user.id, role: user.role }) || ''
 
   return {
     token,

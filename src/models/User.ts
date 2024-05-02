@@ -1,3 +1,4 @@
+import { getCurrentTimeStamp } from '@/helpers/date'
 import mongoose from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 const { Schema, model } = mongoose
@@ -35,7 +36,11 @@ const userSchema = new Schema(
     },
     role: { type: String, enum: ['Admin', 'User'], default: 'User' }
   },
-  { timestamps: true, collation: { locale: 'pt', strength: 2 } }
+  {
+    timestamps: true,
+    collation: { locale: 'pt', strength: 2 },
+    default: getCurrentTimeStamp()
+  }
 )
 
 userSchema.plugin(mongoosePaginate)
