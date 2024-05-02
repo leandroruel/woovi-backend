@@ -58,7 +58,7 @@ export const create = async (args: MutationCreateUserArgs) => {
     accountNumber: generateAccountNumber()
   })
 
-  const token = signToken({ userId: user.id })
+  const token = signToken({ userId: user.id, role: user.role })
 
   return {
     token,
