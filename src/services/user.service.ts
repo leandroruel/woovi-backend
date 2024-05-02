@@ -45,11 +45,20 @@ export const updateUser = async (
   id: string,
   input: UpdateUserPayload
 ): Promise<object | null> =>
-  await UserModel.findByIdAndUpdate(id, input, {
-    new: true
-  })
+  await UserModel.findByIdAndUpdate(
+    id,
+    { ...input, tax_id: input.taxId },
+    {
+      new: true
+    }
+  )
 
-export const loginUser = async (args: MutationLoginArgs) => {
+/**
+ *  Authenticates a user and return a JWT Token
+ * @param args {MutationLoginArgs} - user data
+ * @returns {Promise<Object>} - token and user data
+ */
+export const loginUser = async (args: MutationLoginArgs): Promise<Object> => {
   const { email, password } = args
 
   const user = await UserModel.findOne({ email })
@@ -67,8 +76,10 @@ export const loginUser = async (args: MutationLoginArgs) => {
     })
   }
 
+  const token = signToken({ userId: user.id }) || ''
+
   return {
-    token: signToken({ userId: user.id }),
+    token,
     user
   }
 }
