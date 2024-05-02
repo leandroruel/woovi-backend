@@ -66,12 +66,22 @@ export const create = async (args: MutationCreateUserArgs) => {
   }
 }
 
+/**
+ *  Login user
+ * @param args {MutationLoginArgs} - User data
+ * @returns {Promise<{token: string, user: User}>} - Token and user
+ */
 export const login = async (args: MutationLoginArgs) => {
   const { email, password } = args
 
   return await loginUser({ email, password })
 }
 
+/**
+ * Update user
+ * @param args {MutationUpdateUserArgs} - User data
+ * @returns {Promise<User>} - Updated user
+ */
 export const update = async (args: MutationUpdateUserArgs) => {
   const {
     id,
