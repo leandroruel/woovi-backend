@@ -7,6 +7,12 @@ export const JWT_SECRET = process.env.JWT_SECRET || 'secret'
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || 3600000
 export const JWT_AUDIENCE = process.env.JWT_AUDIENCE || 'mybank'
 
+interface TokenPayload {
+  userId: string
+  role: string
+  lastActivity?: number
+}
+
 /**
  * Extracts the expiration date from a JWT token
  * @param accessToken JWT token
@@ -22,16 +28,12 @@ export const extractExp = (accessToken: string): number => {
   return decodedToken.exp
 }
 
-interface IData {
-  [key: string]: any
-}
-
 /**
  * Signs a JWT token
  * @param data {IData} Data to be signed
  * @returns {string} JWT token
  */
-export const signToken = (data: IData): string | void => {
+export const signToken = (data: TokenPayload): string | void => {
   return jwt.sign(data, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
     algorithm: 'HS256',
