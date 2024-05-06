@@ -1,0 +1,34 @@
+"Represents the type of a transaction."
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+  TRANSFER
+}
+
+enum TransactionState {
+  PENDING
+  DONE
+}
+
+"Represents a transaction between two users."
+type Transaction {
+  sender: User!
+  receiver: User!
+  idempotencyId: UUID!
+  value: Int!
+  type: TransactionType!
+  state: TransactionState!
+  createdAt: Date!
+}
+
+type Query {
+  "Get a transaction by its ID."
+  transaction(id: ID!): Transaction!
+  "Get all transactions."
+  transactions: [Transaction!]!
+}
+
+type Mutation {
+  "Create a transaction between two users."
+  createTransaction(senderId: ID!, receiverId: ID!, value: Int!): Transaction!
+}

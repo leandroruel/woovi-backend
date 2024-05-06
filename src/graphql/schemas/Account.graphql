@@ -35,13 +35,34 @@ input UpdateAccountPayload {
   balance: Float
 }
 
+"Represents a transfer amount payload."
+input TransferAmountPayload {
+  "The sender ID."
+  senderId: ObjectID!
+  "The receiver ID."
+  receiverId: ObjectID!
+  "The amount to transfer."
+  amount: Float!
+  "A unique identifier for the transaction transfer."
+  idempotencyId: UUID!
+  "The status of the transaction."
+  state: TransactionState!
+}
+
 type Query {
+  "Get an account by its ID."
   account(userId: ObjectID!): Account
+  "Get all accounts."
   accounts: [Account!]
 }
 
 type Mutation {
+  "Create an account."
   createAccount(account: CreateAccountPayload!): Account
+  "Update an account."
   updateAccount(account: UpdateAccountPayload!, userId: ObjectID!): Account
+  "Delete an account."
   deleteAccount(id: ObjectID!): Boolean
+  "Transfer an amount between two accounts."
+  transferAmount(transferAmountPayload: TransferAmountPayload!): Boolean
 }
