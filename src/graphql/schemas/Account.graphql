@@ -43,10 +43,6 @@ input TransferAmountPayload {
   receiverId: ObjectID!
   "The amount to transfer."
   amount: Float!
-  "A unique identifier for the transaction transfer."
-  idempotencyId: UUID!
-  "The status of the transaction."
-  state: TransactionState!
 }
 
 type Query {
@@ -64,5 +60,5 @@ type Mutation {
   "Delete an account."
   deleteAccount(id: ObjectID!): Boolean
   "Transfer an amount between two accounts."
-  transferAmount(transferAmountPayload: TransferAmountPayload!): Boolean
+  transferAmount(transferAmountPayload: TransferAmountPayload!): Transaction
 }

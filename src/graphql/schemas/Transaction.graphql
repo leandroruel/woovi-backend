@@ -1,24 +1,49 @@
 "Represents the type of a transaction."
 enum TransactionType {
-  DEPOSIT
-  WITHDRAW
-  TRANSFER
+ deposit,
+ transfer,
+ withdraw
 }
 
 enum TransactionState {
-  PENDING
-  DONE
+  pending,
+  done
 }
 
 "Represents a transaction between two users."
 type Transaction {
-  sender: User!
-  receiver: User!
+  "The unique ID of the transaction."
+  senderId: ObjectID!
+  "The unique ID of the transaction."
+  receiverId: ObjectID!
+  "The unique ID of the transaction."
   idempotencyId: UUID!
+  "The amount of the transaction."
   value: Int!
+  "The type of the transaction."
   type: TransactionType!
+  "The state of the transaction."
   state: TransactionState!
+  "The date of the transaction."
   createdAt: Date!
+}
+
+"Represents the payload to create a transaction."
+input CreateTransactionPayload {
+  "The unique idempotency key."
+  idempotencyId: UUID!
+  "The sender ID."
+  senderId: ObjectID!
+  "The receiver ID."
+  receiverId: ObjectID!
+  "The value of the transaction."
+  value: Int!
+  "The type of the transaction."
+  type: TransactionType!
+  "The state of the transaction."
+  state: TransactionState!
+  "The description of the transaction."
+  description: String!
 }
 
 type Query {
@@ -29,6 +54,6 @@ type Query {
 }
 
 type Mutation {
-  "Create a transaction between two users."
-  createTransaction(senderId: ID!, receiverId: ID!, value: Int!): Transaction!
+  "Create a transaction record."
+  createTransaction(payload: CreateTransactionPayload!): Transaction!
 }
