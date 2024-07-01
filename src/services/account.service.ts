@@ -101,7 +101,6 @@ export const transferAmount = async (data: MutationTransferAmountArgs) => {
 		});
 
 		return transaction;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	} catch (error: any) {
 		if (error && error.code === 11000) {
 			throw new GraphQLError(TRANSACTION_ALREADY_EXISTS);

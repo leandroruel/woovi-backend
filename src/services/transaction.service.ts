@@ -57,7 +57,6 @@ export const createTransaction = async (data: CreateTransactionPayload) => {
 		});
 
 		return transaction;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	} catch (error: any) {
 		throw new GraphQLError(error);
 	}
