@@ -8,13 +8,12 @@ import {
 	INSUFFICIENT_BALANCE,
 	SENDER_RECEIVER_NOT_FOUND,
 	TRANSACTION_ALREADY_EXISTS,
-	TRANSACTION_BEING_PROCESSED,
 } from "@/helpers/constants";
 import AccountModel from "@/models/Account";
 import { GraphQLError } from "graphql";
 import { createTransaction } from "./transaction.service";
 import { v4 as uuidv4 } from "uuid";
-import { mapGraphqlToMongoEnum } from "@/helpers/enumToMongo";
+
 /**
  * Create a new account
  * @param args {CreateAccountPayload} - Account data payload
@@ -42,6 +41,11 @@ export const generateAccountNumber = (): string => {
 	return `${accountNumber}${checksum}`;
 };
 
+/**
+ *  Calculate the checksum for an account number
+ * @param {number} accountNumber
+ * @returns {number} - Checksum
+ */
 const calculateChecksum = (accountNumber: number): number => {
 	const sum = Array.from(String(accountNumber), Number)
 		.reverse()
@@ -75,8 +79,6 @@ export const transferAmount = async (data: MutationTransferAmountArgs) => {
 		if (!senderAccount || !receiverAccount) {
 			throw new GraphQLError(SENDER_RECEIVER_NOT_FOUND);
 		}
-
-		console.log("montante", amount);
 
 		if (senderAccount.balance < amount) {
 			throw new GraphQLError(INSUFFICIENT_BALANCE);
