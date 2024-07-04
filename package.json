@@ -8,9 +8,7 @@
 		"build": "tsc -p tsconfig.json",
 		"start": "npx ts-node ./src/index.ts",
 		"dev": "tsx watch ./src/index.ts",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
-		"prettier": "prettier --write .",
+		"format": "biome format",
 		"mongo:seed": "yarn tsx src/models/seeder.ts",
 		"codegen": "graphql-codegen --config codegen.ts",
 		"test": "vitest"

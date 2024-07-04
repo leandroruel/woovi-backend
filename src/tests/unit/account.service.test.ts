@@ -22,6 +22,11 @@ vi.mock("uuid", async () => {
 	};
 });
 
+// biome-ignore lint/style/useConst: <explanation>
+let initialSenderBalance = 500;
+// biome-ignore lint/style/useConst: <explanation>
+let initialReceiverBalance = 200;
+
 const senderId = "sender-id";
 const receiverId = "receiver-id";
 const amount = 100;
@@ -29,13 +34,13 @@ const idempotencyId = "idempotency-id";
 
 const senderAccount = {
 	userId: senderId,
-	balance: 500,
+	balance: initialSenderBalance,
 	save: vi.fn(),
 };
 
 const receiverAccount = {
 	userId: receiverId,
-	balance: 200,
+	balance: initialReceiverBalance,
 	save: vi.fn(),
 };
 
@@ -49,9 +54,12 @@ const transaction = {
 	description: "Transfer between users",
 };
 
+
+
 describe("transferAmount", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+
 	});
 
 	it("should transfer amount between accounts successfully", async () => {
@@ -125,7 +133,7 @@ describe("transferAmount", () => {
 		vi.spyOn(AccountModel, "findOne")
 			.mockResolvedValueOnce(senderAccount)
 			.mockResolvedValueOnce(receiverAccount);
-		// (uuidv4 as any).mockReturnValue(idempotencyId);
+		(uuidv4 as any).mockReturnValue(idempotencyId);
 		(createTransaction as any).mockRejectedValueOnce(error);
 
 		await expect(
@@ -144,7 +152,7 @@ describe("transferAmount", () => {
 		vi.spyOn(AccountModel, "findOne")
 			.mockResolvedValueOnce(senderAccount)
 			.mockResolvedValueOnce(receiverAccount);
-		// (uuidv4 as any).mockReturnValue(idempotencyId);
+		(uuidv4 as any).mockReturnValue(idempotencyId);
 		(createTransaction as any).mockRejectedValueOnce(error);
 
 		await expect(
@@ -156,5 +164,38 @@ describe("transferAmount", () => {
 				},
 			}),
 		).rejects.toThrow(new GraphQLError("Generic error"));
+	});
+
+    // needs to fix
+    it.skip("should perform idempotent transfer amount", async () => {
+        vi.spyOn(AccountModel, "findOne")
+			.mockResolvedValueOnce(senderAccount)
+			.mockResolvedValueOnce(receiverAccount);
+
+        (uuidv4 as any).mockReturnValue(idempotencyId);
+
+		const transferData = {
+			transferAmountPayload: {
+				senderId,
+				receiverId,
+				amount: 200,
+			},
+		};
+
+        console.log(transferData)
+
+		const firstTransfer = await transferAmount(transferData);
+		const secondTransfer = await transferAmount(transferData);
+
+		expect(firstTransfer).toEqual(secondTransfer);
+
+		expect(AccountModel.findOne).toHaveBeenCalledTimes(4);
+		expect(senderAccount.save).toHaveBeenCalledTimes(1);
+		expect(receiverAccount.save).toHaveBeenCalledTimes(1);
+
+		expect(createTransaction).toHaveBeenCalledTimes(1);
+
+		expect(senderAccount.balance).toBe(initialSenderBalance - 200);
+		expect(receiverAccount.balance).toBe(initialReceiverBalance + 200);
 	});
 });
