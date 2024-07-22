@@ -22,11 +22,20 @@ import { createTransaction, getTransaction } from "./transaction.service";
 export const createAccount = async (
   args: CreateAccountPayload,
 ): Promise<Account> => {
-  const account = await AccountModel.create(args);
-  return {
-    ...account.toJSON(),
-    userId: account.userId.toString(),
-  };
+  try {
+    const { idempotencyId } = args;
+    const existingAccount: Account | null = await AccountModel.findOne({
+      idempotencyId,
+    });
+
+    if (existingAccount) return existingAccount;
+
+    const account: Account | any = await AccountModel.create(args);
+
+    return account;
+  } catch (error: any) {
+    throw new GraphQLError(error?.message || error);
+  }
 };
 
 /**
