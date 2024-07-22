@@ -369,6 +369,8 @@ export enum TransactionType {
 export type TransferAmountPayload = {
   /** The amount to transfer. */
   amount: Scalars['Float']['input'];
+  /** The idempotency ID. */
+  idempotencyId: Scalars['UUID']['input'];
   /** The receiver ID. */
   receiverId: Scalars['ObjectID']['input'];
   /** The sender ID. */
