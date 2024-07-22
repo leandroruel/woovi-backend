@@ -14,5 +14,8 @@ RUN
 # Expõe a porta 4000
 EXPOSE 4000
 
+# Set timezone
+ENV TZ America/Sao_Paulo
+
 # Comando de inicialização do aplicativo
 CMD ["sh", "-c", "yarn install && yarn dev"]
