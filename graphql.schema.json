@@ -1817,6 +1817,22 @@
             "deprecationReason": null
           },
           {
+            "name": "idempotencyId",
+            "description": "The idempotency ID.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "receiverId",
             "description": "The receiver ID.",
             "type": {

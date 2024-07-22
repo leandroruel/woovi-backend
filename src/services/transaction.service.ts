@@ -1,6 +1,6 @@
 import {
-	type CreateTransactionPayload,
-	TransactionType,
+  type CreateTransactionPayload,
+  TransactionType,
 } from "@/generated/graphql";
 import Transaction from "@/models/Transaction";
 import { GraphQLError } from "graphql";
@@ -11,7 +11,7 @@ import { GraphQLError } from "graphql";
  * @returns {Promise<Boolean>} - True if exists, false otherwise
  */
 export const transactionExists = async (
-	idempotencyId: string,
+  idempotencyId: string,
 ): Promise<boolean> => Boolean(await Transaction.exists({ idempotencyId }));
 
 /**
@@ -20,7 +20,7 @@ export const transactionExists = async (
  * @returns {Promise<any>} - Account object
  */
 export const getTransaction = async (idempotencyId: string) =>
-	await Transaction.findOne({ idempotencyId });
+  await Transaction.findOne({ idempotencyId });
 
 /**
  * Create a new transaction
@@ -28,36 +28,29 @@ export const getTransaction = async (idempotencyId: string) =>
  * @returns
  */
 export const createTransaction = async (data: CreateTransactionPayload) => {
-	try {
-		const existingTransaction = await getTransaction(data.idempotencyId);
+  try {
+    const lastEntry = await Transaction.findOne()
+      .sort({ createdAt: -1 })
+      .limit(1);
+    const lastBalance = lastEntry ? lastEntry.value : 0;
 
-		if (existingTransaction) {
-			console.log(`Transaction already exists: ${existingTransaction}`);
-			return;
-		}
+    console.log("last entry", lastEntry);
+    console.log("type", data.type);
 
-		const lastEntry = await Transaction.findOne()
-			.sort({ createdAt: -1 })
-			.limit(1);
-		const lastBalance = lastEntry ? lastEntry.value : 0;
+    const newBalance =
+      (data.type as TransactionType) === TransactionType.Deposit
+        ? lastBalance + data.value
+        : lastBalance - data.value;
 
-		console.log("last entry", lastEntry);
-		console.log("type", data.type);
+    const transaction = await Transaction.create({
+      ...data,
+      type: data.type,
+      state: data.state,
+      balance: newBalance,
+    });
 
-		const newBalance =
-			(data.type as TransactionType) === TransactionType.Deposit
-				? lastBalance + data.value
-				: lastBalance - data.value;
-
-		const transaction = await Transaction.create({
-			...data,
-			type: data.type,
-			state: data.state,
-			balance: newBalance,
-		});
-
-		return transaction;
-	} catch (error: any) {
-		throw new GraphQLError(error);
-	}
+    return transaction;
+  } catch (error: any) {
+    throw new GraphQLError(error);
+  }
 };

@@ -43,6 +43,8 @@ input TransferAmountPayload {
   receiverId: ObjectID!
   "The amount to transfer."
   amount: Float!
+  "The idempotency ID."
+  idempotencyId: UUID!
 }
 
 type Query {
