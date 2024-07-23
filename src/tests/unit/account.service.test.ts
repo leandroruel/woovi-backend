@@ -74,6 +74,7 @@ describe("transferAmount", () => {
 				senderId,
 				receiverId,
 				amount,
+				idempotencyId
 			},
 		});
 
@@ -104,6 +105,7 @@ describe("transferAmount", () => {
 					senderId,
 					receiverId,
 					amount,
+					idempotencyId
 				},
 			}),
 		).rejects.toThrow(new GraphQLError(SENDER_RECEIVER_NOT_FOUND));
@@ -121,6 +123,7 @@ describe("transferAmount", () => {
 					senderId,
 					receiverId,
 					amount,
+					idempotencyId
 				},
 			}),
 		).rejects.toThrow(new GraphQLError(INSUFFICIENT_BALANCE));
@@ -142,6 +145,7 @@ describe("transferAmount", () => {
 					senderId,
 					receiverId,
 					amount,
+					idempotencyId
 				},
 			}),
 		).rejects.toThrow(new GraphQLError(TRANSACTION_ALREADY_EXISTS));
@@ -161,6 +165,7 @@ describe("transferAmount", () => {
 					senderId,
 					receiverId,
 					amount,
+					idempotencyId
 				},
 			}),
 		).rejects.toThrow(new GraphQLError("Generic error"));
@@ -179,6 +184,7 @@ describe("transferAmount", () => {
 				senderId,
 				receiverId,
 				amount: 200,
+				idempotencyId
 			},
 		};
 
