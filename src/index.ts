@@ -1,7 +1,7 @@
 import cors from "@koa/cors";
 import dotenv from "dotenv";
 import http from "http";
-import app from "@/server";
+import app from "./server";
 import { NODE_PORT } from "./config";
 
 import authDirective from "@/graphql/directives";
