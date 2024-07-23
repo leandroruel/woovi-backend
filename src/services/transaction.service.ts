@@ -29,13 +29,16 @@ export const getTransaction = async (idempotencyId: string) =>
  */
 export const createTransaction = async (data: CreateTransactionPayload) => {
   try {
+    const { idempotencyId } = data;
+
+    const existingTransaction = await Transaction.findOne({ idempotencyId });
+
+    if (existingTransaction) return existingTransaction;
+
     const lastEntry = await Transaction.findOne()
       .sort({ createdAt: -1 })
       .limit(1);
     const lastBalance = lastEntry ? lastEntry.value : 0;
-
-    console.log("last entry", lastEntry);
-    console.log("type", data.type);
 
     const newBalance =
       (data.type as TransactionType) === TransactionType.Deposit
