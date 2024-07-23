@@ -71,4 +71,5 @@ type Mutation {
   updateUser(user: UpdateUserPayload!, id: ID!): User @auth(requires: User)
   deleteUser(id: ID!): Boolean @auth(requires: Admin)
   login(email: String!, password: String!): AuthUser
+  logout: Boolean @auth(requires: User)
 }
