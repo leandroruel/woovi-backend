@@ -28,7 +28,13 @@ const userResolver = {
     },
     async login(_: any, args: any, ctx: any) {
       return await UserController.login(args)
-    }
+    },
+    async logout(_: any, args: any, ctx: any) {
+      const { token} = ctx
+      const tokenString = token.split(' ')[1]
+
+      return await UserController.logout(tokenString)
+    } 
   },
   User: {
     taxId: (user: InstanceType<typeof User>) => user.tax_id

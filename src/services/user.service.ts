@@ -4,10 +4,12 @@ import type {
   UpdateUserPayload,
 } from "@/generated/graphql";
 import { INVALID_PASSWORD, USER_NOT_FOUND } from "@/helpers/constants";
-import { signToken } from "@/helpers/jwt";
+import { decodeToken, JWT_EXPIRES_IN, signToken } from "@/helpers/jwt";
 import { verifyPassword } from "@/helpers/password";
 import UserModel from "@/models/User";
 import { GraphQLError } from "graphql";
+import { JwtPayload } from "jsonwebtoken";
+import { revokeToken } from "./token.service";
 
 /**
  * Check if email exists on database
@@ -82,4 +84,15 @@ export const loginUser = async (args: MutationLoginArgs): Promise<any> => {
     token,
     user,
   };
+};
+
+/**
+ * Logout a user and revoke the token
+ * @param token {string} - token to revoke
+ * @returns {boolean} - true if token was revoked
+ */
+export const logoutUser = async (token: string) => {
+  if (!token) return false;
+
+  return await revokeToken(token);
 };

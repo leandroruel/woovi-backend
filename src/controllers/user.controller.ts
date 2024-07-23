@@ -2,6 +2,7 @@ import type {
   MutationCreateUserArgs,
   MutationLoginArgs,
   MutationUpdateUserArgs,
+  User,
 } from "@/generated/graphql";
 import {
   DOCUMENT_ALREADY_EXISTS,
@@ -18,6 +19,7 @@ import {
   documentExists,
   emailExists,
   loginUser,
+  logoutUser,
   updateUser,
 } from "@/services/user.service";
 import {
@@ -71,7 +73,9 @@ export const create = async (args: MutationCreateUserArgs) => {
  * @param args {MutationLoginArgs} - User data
  * @returns {Promise<{token: string, user: User}>} - Token and user
  */
-export const login = async (args: MutationLoginArgs) => {
+export const login = async (
+  args: MutationLoginArgs,
+): Promise<{ token: string; user: User }> => {
   const { email, password } = args;
 
   return await loginUser({ email, password });
@@ -117,4 +121,13 @@ export const update = async (args: MutationUpdateUserArgs) => {
   return user;
 };
 
-export default { create, update, login };
+/**
+ * Logout user
+ * @param token {string} - User token
+ * @returns {Promise<boolean>} - Logout status
+ */
+export const logout = async (token: string): Promise<boolean> => {
+  return await logoutUser(token);
+};
+
+export default { create, update, login, logout };
