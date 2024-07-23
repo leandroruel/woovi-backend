@@ -1,6 +1,13 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-const { Schema, model } = mongoose
+const { Schema, model } = mongoose;
+
+export interface IAccount extends mongoose.Document {
+  idempotencyId: string;
+  accountNumber: string;
+  userId: mongoose.Schema.Types.ObjectId;
+  balance: number;
+}
 
 const accountSchema = new Schema(
   {
@@ -8,15 +15,15 @@ const accountSchema = new Schema(
     accountNumber: { type: String, required: true, unique: true },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
-      unique: true
+      unique: true,
     },
-    balance: { type: Number, default: 0 }
+    balance: { type: Number, default: 0 },
   },
-  { timestamps: true, collation: { locale: 'pt', strength: 2 } }
-)
+  { timestamps: true, collation: { locale: "pt", strength: 2 } },
+);
 
-const Account = model('Account', accountSchema)
+const Account = model<IAccount>("Account", accountSchema);
 
-export default Account
+export default Account;
