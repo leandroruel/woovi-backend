@@ -58,9 +58,9 @@ type Mutation {
   "Create an account."
   createAccount(account: CreateAccountPayload!): Account
   "Update an account."
-  updateAccount(account: UpdateAccountPayload!, userId: ObjectID!): Account
+  updateAccount(account: UpdateAccountPayload!, userId: ObjectID!): Account @auth(requires: User)
   "Delete an account."
-  deleteAccount(id: ObjectID!): Boolean
+  deleteAccount(id: ObjectID!): Boolean @auth(requires: User)
   "Transfer an amount between two accounts."
-  transferAmount(transferAmountPayload: TransferAmountPayload!): Transaction
+  transferAmount(transferAmountPayload: TransferAmountPayload!): Transaction @auth(requires: User)
 }
