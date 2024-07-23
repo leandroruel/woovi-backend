@@ -1,6 +1,7 @@
 import { AuthorizationError } from '@/helpers/errors'
 import { getDirective, MapperKind, mapSchema } from '@graphql-tools/utils'
 import { defaultFieldResolver, type GraphQLSchema } from 'graphql'
+import { tokenExists } from '@/services/token.service'
 
 function authDirective(
   directiveName: string,
@@ -35,8 +36,13 @@ function authDirective(
             if (requires) {
               const { resolve = defaultFieldResolver } = fieldConfig
 
-              fieldConfig.resolve = (source, args, context, info) => {
+              fieldConfig.resolve = async (source, args, context, info) => {
                 const user = getUserFn(context.token)
+                const isBlackListed = await tokenExists(context.token.split(' ')[1])
+
+                if (isBlackListed) {
+                  throw new AuthorizationError('token revoked')
+                }
 
                 if (!user.hasRole(requires)) {
                   throw new AuthorizationError('not authorized')
