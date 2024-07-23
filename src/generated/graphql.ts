@@ -250,6 +250,7 @@ export type Mutation = {
   deleteAccount?: Maybe<Scalars['Boolean']['output']>;
   deleteUser?: Maybe<Scalars['Boolean']['output']>;
   login?: Maybe<AuthUser>;
+  logout?: Maybe<Scalars['Boolean']['output']>;
   /** Transfer an amount between two accounts. */
   transferAmount?: Maybe<Transaction>;
   /** Update an account. */
@@ -902,6 +903,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteAccount?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteAccountArgs, 'id'>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthUser']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  logout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   transferAmount?: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<MutationTransferAmountArgs, 'transferAmountPayload'>>;
   updateAccount?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<MutationUpdateAccountArgs, 'account' | 'userId'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'user'>>;
