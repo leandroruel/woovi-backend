@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
-		"start": "nodemon ./src/index.js",
+		"start": "nodemon ./src/index.ts",
 		"dev": "tsx watch ./src/index.ts",
 		"format": "biome format",
 		"mongo:seed": "yarn tsx src/models/seeder.ts",
