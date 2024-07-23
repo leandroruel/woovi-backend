@@ -1,16 +1,16 @@
-import dotenv from 'dotenv'
-import jwt from 'jsonwebtoken'
-import { AuthenticationError } from './errors'
-dotenv.config()
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { AuthenticationError } from "./errors";
+dotenv.config();
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'secret'
-export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || 3600000
-export const JWT_AUDIENCE = process.env.JWT_AUDIENCE || 'mybank'
+export const JWT_SECRET = process.env.JWT_SECRET || "secret";
+export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || 3600000;
+export const JWT_AUDIENCE = process.env.JWT_AUDIENCE || "mybank";
 
 interface TokenPayload {
-  userId: string
-  role: string
-  lastActivity?: number
+  userId: string;
+  role: string;
+  lastActivity?: number;
 }
 
 /**
@@ -19,28 +19,28 @@ interface TokenPayload {
  * @returns
  */
 export const extractExp = (accessToken: string): number => {
-  const decodedToken = jwt.decode(accessToken)
+  const decodedToken = jwt.decode(accessToken);
 
-  if (!decodedToken || typeof decodedToken !== 'object' || !decodedToken.exp) {
-    throw new Error('Token inválido ou expirado')
+  if (!decodedToken || typeof decodedToken !== "object" || !decodedToken.exp) {
+    throw new Error("Token inválido ou expirado");
   }
 
-  return decodedToken.exp
-}
+  return decodedToken.exp;
+};
 
 /**
  * Signs a JWT token
  * @param data {IData} Data to be signed
  * @returns {string} JWT token
  */
-export const signToken = (data: TokenPayload): string | void => {
+export const signToken = (data: TokenPayload): string | undefined => {
   return jwt.sign(data, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
-    algorithm: 'HS256',
+    algorithm: "HS256",
     audience: JWT_AUDIENCE,
-    subject: data.userId
-  })
-}
+    subject: data.userId,
+  });
+};
 
 /**
  * Verifies a JWT token
@@ -50,14 +50,14 @@ export const signToken = (data: TokenPayload): string | void => {
 export const verifyToken = (
   token: string,
   audience: string,
-  subject: string
+  subject: string,
 ) => {
   try {
-    return jwt.verify(token, JWT_SECRET, { audience, subject })
+    return jwt.verify(token, JWT_SECRET, { audience, subject });
   } catch (error: any) {
-    throw new AuthenticationError(error.message || error)
+    throw new AuthenticationError(error.message || error);
   }
-}
+};
 
 /**
  * Decodes a JWT token
@@ -65,5 +65,5 @@ export const verifyToken = (
  * @returns {object} Decoded token
  */
 export const decodeToken = (token: string): Record<string, any> | null => {
-  return jwt.decode(token.replace('Bearer ', '')) as jwt.JwtPayload
-}
+  return jwt.decode(token.replace("Bearer ", "")) as jwt.JwtPayload;
+};
