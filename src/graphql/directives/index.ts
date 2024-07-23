@@ -1,6 +1,6 @@
 import { AuthorizationError } from '@/helpers/errors'
 import { getDirective, MapperKind, mapSchema } from '@graphql-tools/utils'
-import { defaultFieldResolver, GraphQLSchema } from 'graphql'
+import { defaultFieldResolver, type GraphQLSchema } from 'graphql'
 
 function authDirective(
   directiveName: string,
@@ -35,7 +35,7 @@ function authDirective(
             if (requires) {
               const { resolve = defaultFieldResolver } = fieldConfig
 
-              fieldConfig.resolve = function (source, args, context, info) {
+              fieldConfig.resolve = (source, args, context, info) => {
                 const user = getUserFn(context.token)
 
                 if (!user.hasRole(requires)) {
