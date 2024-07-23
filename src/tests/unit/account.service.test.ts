@@ -30,7 +30,7 @@ let initialReceiverBalance = 200;
 const senderId = "sender-id";
 const receiverId = "receiver-id";
 const amount = 100;
-const idempotencyId = "idempotency-id";
+const idempotencyId = "5ce371a7-a824-4836-9409-40028d454c2d";
 
 const senderAccount = {
 	userId: senderId,
