@@ -15,9 +15,6 @@
 	},
 	"author": "leandroruel",
 	"license": "ISC",
-	"engines": {
-		"node": "20.x"
-	},
 	"dependencies": {
 		"@apollo/server": "^4.10.4",
 		"@as-integrations/koa": "^1.1.1",
