@@ -1,18 +1,18 @@
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 interface DatabaseConfig {
-  host: string
-  port: string | number
-  name: string
-  username: string
-  password: string
+  host: string;
+  port: string | number;
+  name: string;
+  username: string;
+  password: string;
 }
 
 interface Config {
-  database: DatabaseConfig
-  dropDatabase: boolean
+  database: DatabaseConfig;
+  dropDatabase: boolean;
 }
 
 /**
@@ -21,35 +21,36 @@ interface Config {
  */
 const config: Config = {
   database: {
-    host: process.env.MONGO_HOST || 'localhost',
+    host: process.env.MONGO_HOST || "localhost",
     port: process.env.MONGO_PORT || 27017,
-    name: process.env.MONGODB_DATABASE || 'mydatabase',
-    username: process.env.MONGO_USERNAME || 'root',
-    password: process.env.MONGO_PASSWORD || 'MyPassword123!'
+    name: process.env.MONGODB_DATABASE || "mydatabase",
+    username: process.env.MONGO_USERNAME || "root",
+    password: process.env.MONGO_PASSWORD || "MyPassword123!",
   },
-  dropDatabase: true
-}
+  dropDatabase: true,
+};
 
 /**
- * MongoDB URL
+ * Check if the application is in production
+ */
+const isProduction = process.env.NODE_ENV === "production";
+
+/**
+ * MongoDB application name
+ * @constant {string} MONGO_APP_NAME - The name of the MongoDB application
+ */
+const MONGO_APP_NAME = process.env.MONGO_APP_NAME || "myapp";
+
+/**
+ * MongoDB URI
+ * @constant {string} MONGO_URI - The URI to connect to MongoDB
+ */
+const MONGO_URI = process.env.MONGO_URI || "";
+
+/**
+ * MongoDB URL, if products use MONGO_URI, otherwise construct the URL from the config
  * @constant {string} MONGODB_URL - The URL to connect to MongoDB
  */
-export const MONGODB_URL: string = `mongodb://${config.database.host}:${config.database.port}/${config.database.name}?authSource=admin`
-
-/**
- * MongoDB database name
- * @constant {string} MONGODB_DB_NAME - The name of the MongoDB database
- */
-export const MONGODB_DATABASE = config.database.name
-
-/**
- * MongoDB database username
- * @constant {string} MONGODB_USERNAME - The username for the MongoDB database
- */
-export const MONGODB_USERNAME = config.database.username
-
-/**
- * MongoDB password
- * @constant {string} MONGODB_PASSWORD - The password for the MongoDB database
- */
-export const MONGODB_PASSWORD = config.database.password
+export const MONGODB_URL: string = isProduction
+  ? MONGO_URI
+  : `mongodb://${config.database.username}:${config.database.password}@${config.database.host}:${config.database.port}/${config.database.name}?authSource=admin`;

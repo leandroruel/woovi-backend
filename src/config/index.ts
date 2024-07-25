@@ -1,4 +1,4 @@
-import { NODE_PORT } from './app'
-import { MONGODB_PASSWORD, MONGODB_URL, MONGODB_USERNAME } from './database'
+import { NODE_PORT } from "./app";
+import { MONGODB_URL } from "./database";
 
-export { MONGODB_PASSWORD, MONGODB_URL, MONGODB_USERNAME, NODE_PORT }
+export { MONGODB_URL, NODE_PORT };
