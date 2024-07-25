@@ -13,6 +13,7 @@ const app = new Koa();
 app.use(logger());
 app.use(checkRequest);
 
+console.log("connecting to URL", MONGODB_URL);
 Mongoose.connect(MONGODB_URL);
 
 Mongoose.connection.on("error", (error) => {
