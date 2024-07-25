@@ -25,7 +25,7 @@ const config: Config = {
     port: process.env.MONGO_PORT || 27017,
     name: process.env.MONGODB_DATABASE || "mydatabase",
     username: process.env.MONGO_USERNAME || "root",
-    password: process.env.MONGO_PASSWORD || "MyPassword123!",
+    password: String(process.env.MONGO_PASSWORD),
   },
   dropDatabase: true,
 };
