@@ -14,7 +14,9 @@ app.use(logger());
 app.use(checkRequest);
 
 console.log("connecting to URL", MONGODB_URL);
-Mongoose.connect(MONGODB_URL);
+Mongoose.connect(MONGODB_URL, {
+  tlsCAFile: "global-bundle.pem", // for amazon DocumentDB
+});
 
 Mongoose.connection.on("error", (error) => {
   console.log("Error connecting to database", error);
