@@ -35,6 +35,8 @@ const config: Config = {
  */
 const isProduction = process.env.NODE_ENV === "production";
 
+console.log("isProduction", isProduction);
+
 /**
  * MongoDB application name
  * @constant {string} MONGO_APP_NAME - The name of the MongoDB application
