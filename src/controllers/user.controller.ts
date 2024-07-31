@@ -76,9 +76,7 @@ export const create = async (args: MutationCreateUserArgs) => {
 export const login = async (
   args: MutationLoginArgs,
 ): Promise<{ token: string; user: User }> => {
-  const { email, password } = args;
-
-  return await loginUser({ email, password });
+  return await loginUser(args);
 };
 
 /**

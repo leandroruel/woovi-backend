@@ -61,6 +61,11 @@ input UpdateUserPayload {
   role: UserRoleEnum
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 type Query {
   user(id: ID!): User
   users: [User!]
@@ -70,6 +75,6 @@ type Mutation {
   createUser(user: CreateUserPayload!): AuthUser 
   updateUser(user: UpdateUserPayload!, id: ID!): User @auth(requires: User)
   deleteUser(id: ID!): Boolean @auth(requires: Admin)
-  login(email: String!, password: String!): AuthUser
+  login(input: LoginInput!): AuthUser
   logout: Boolean @auth(requires: User)
 }

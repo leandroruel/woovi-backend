@@ -61,7 +61,9 @@ export const updateUser = async (
  * @returns {Promise<any>} - token and user data
  */
 export const loginUser = async (args: MutationLoginArgs): Promise<any> => {
-  const { email, password } = args;
+  const {
+    input: { email, password },
+  } = args;
 
   const user = await UserModel.findOne({ email });
 
