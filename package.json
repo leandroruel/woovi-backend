@@ -8,7 +8,7 @@
 		"build": "tsc -p tsconfig.json",
 		"start": "nodemon ./src/index.ts",
 		"dev": "tsx watch ./src/index.ts",
-		"format": "biome format",
+		"format": "biome format --write",
 		"codegen": "graphql-codegen --config codegen.ts",
 		"test": "vitest"
 	},
