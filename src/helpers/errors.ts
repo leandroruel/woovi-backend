@@ -1,25 +1,25 @@
-import { GraphQLError } from 'graphql'
-import { UNAUTHENTICATED, UNAUTHORIZED } from './constants'
+import { GraphQLError } from "graphql";
+import { UNAUTHENTICATED, UNAUTHORIZED } from "./constants";
 
 export class AuthenticationError extends GraphQLError {
   constructor(message: string) {
-    super(message)
-    this.extensions.code = UNAUTHENTICATED
+    super(message);
+    this.extensions.code = UNAUTHENTICATED;
   }
 }
 
 export class AuthorizationError extends GraphQLError {
   constructor(message: string) {
-    super(message)
-    this.extensions.code = UNAUTHORIZED
+    super(message);
+    this.extensions.code = UNAUTHORIZED;
   }
 }
 
 export const formatGraphQLError = (error: GraphQLError) => {
-  if (error && error.name === 'MongoServerError') {
-    const errorMessage = error.message || 'Sorry, something went wrong'
-    throw new GraphQLError(errorMessage, error)
+  if (error && error.name === "MongoServerError") {
+    const errorMessage = error.message || "Sorry, something went wrong";
+    throw new GraphQLError(errorMessage, error);
   }
 
-  throw new GraphQLError(error.message, error)
-}
+  throw new GraphQLError(error.message, error);
+};

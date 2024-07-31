@@ -1,5 +1,5 @@
 export const getCurrentTimeStamp = (): Date => {
-  const current = new Date()
+  const current = new Date();
   return new Date(
     Date.UTC(
       current.getFullYear(),
@@ -8,7 +8,7 @@ export const getCurrentTimeStamp = (): Date => {
       current.getHours(),
       current.getMinutes(),
       current.getSeconds(),
-      current.getMilliseconds()
-    )
-  )
-}
+      current.getMilliseconds(),
+    ),
+  );
+};

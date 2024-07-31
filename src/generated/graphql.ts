@@ -239,6 +239,11 @@ export type CreateUserPayload = {
   taxId: Scalars['String']['input'];
 };
 
+export type LoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Create an account. */
@@ -285,8 +290,7 @@ export type MutationDeleteUserArgs = {
 
 
 export type MutationLoginArgs = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  input: LoginInput;
 };
 
 
@@ -538,6 +542,7 @@ export type ResolversTypes = {
   LocalEndTime: ResolverTypeWrapper<Scalars['LocalEndTime']['output']>;
   LocalTime: ResolverTypeWrapper<Scalars['LocalTime']['output']>;
   Locale: ResolverTypeWrapper<Scalars['Locale']['output']>;
+  LoginInput: LoginInput;
   Long: ResolverTypeWrapper<Scalars['Long']['output']>;
   Longitude: ResolverTypeWrapper<Scalars['Longitude']['output']>;
   MAC: ResolverTypeWrapper<Scalars['MAC']['output']>;
@@ -631,6 +636,7 @@ export type ResolversParentTypes = {
   LocalEndTime: Scalars['LocalEndTime']['output'];
   LocalTime: Scalars['LocalTime']['output'];
   Locale: Scalars['Locale']['output'];
+  LoginInput: LoginInput;
   Long: Scalars['Long']['output'];
   Longitude: Scalars['Longitude']['output'];
   MAC: Scalars['MAC']['output'];
@@ -902,7 +908,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createUser?: Resolver<Maybe<ResolversTypes['AuthUser']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
   deleteAccount?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteAccountArgs, 'id'>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
-  login?: Resolver<Maybe<ResolversTypes['AuthUser']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  login?: Resolver<Maybe<ResolversTypes['AuthUser']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   logout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   transferAmount?: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<MutationTransferAmountArgs, 'transferAmountPayload'>>;
   updateAccount?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<MutationUpdateAccountArgs, 'account' | 'userId'>>;

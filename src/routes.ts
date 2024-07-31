@@ -1,9 +1,9 @@
-import Router from '@koa/router'
+import Router from "@koa/router";
 
-const router = new Router()
+const router = new Router();
 
-router.get('/', async (ctx) => {
-  ctx.body = 'GraphQL Server Ready! go to /graphql to start playing around!'
-})
+router.get("/", async (ctx) => {
+  ctx.body = "GraphQL Server Ready! go to /graphql to start playing around!";
+});
 
-export default router
+export default router;
