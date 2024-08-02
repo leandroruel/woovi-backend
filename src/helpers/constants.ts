@@ -1,7 +1,7 @@
 export const USER_ALREADY_EXISTS = "User already exists";
 export const USER_NOT_FOUND = "User not found";
-export const EMAIL_ALREADY_EXISTS = "Email already exists";
-export const DOCUMENT_ALREADY_EXISTS = "Document already exists";
+export const EMAIL_ALREADY_EXISTS = "EMAIL_ALREADY_EXISTS";
+export const DOCUMENT_ALREADY_EXISTS = "DOCUMENT_ALREADY_EXISTS";
 export const ACCOUNT_NOT_FOUND = "Account not found";
 export const INSUFFICIENT_BALANCE = "Insufficient balance";
 export const INVALID_ACCOUNT_NUMBER = "Invalid account number";

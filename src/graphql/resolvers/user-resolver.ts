@@ -14,11 +14,7 @@ const userResolver = {
   },
   Mutation: {
     async createUser(_: any, args: any, ctx: any) {
-      try {
-        return await UserController.create(args)
-      } catch (error: any) {
-        throw new GraphQLError(error)
-      }
+      return await UserController.create(args)
     },
     async updateUser(_: any, args: any) {
       return await UserController.update(args)

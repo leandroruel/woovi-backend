@@ -313,6 +313,8 @@ export type Query = {
   __typename?: 'Query';
   /** Get an account by its ID. */
   account?: Maybe<Account>;
+  /** Get an account by its user ID. */
+  accountByUserId?: Maybe<Account>;
   /** Get all accounts. */
   accounts?: Maybe<Array<Account>>;
   /** Get a transaction by its ID. */
@@ -325,6 +327,11 @@ export type Query = {
 
 
 export type QueryAccountArgs = {
+  id: Scalars['ObjectID']['input'];
+};
+
+
+export type QueryAccountByUserIdArgs = {
   userId: Scalars['ObjectID']['input'];
 };
 
@@ -965,7 +972,8 @@ export interface PostalCodeScalarConfig extends GraphQLScalarTypeConfig<Resolver
 }
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountArgs, 'userId'>>;
+  account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountArgs, 'id'>>;
+  accountByUserId?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountByUserIdArgs, 'userId'>>;
   accounts?: Resolver<Maybe<Array<ResolversTypes['Account']>>, ParentType, ContextType>;
   transaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
   transactions?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;

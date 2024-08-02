@@ -49,9 +49,11 @@ input TransferAmountPayload {
 
 type Query {
   "Get an account by its ID."
-  account(userId: ObjectID!): Account
+  account(id: ObjectID!): Account
   "Get all accounts."
   accounts: [Account!]
+  "Get an account by its user ID."
+  accountByUserId(userId: ObjectID!): Account
 }
 
 type Mutation {

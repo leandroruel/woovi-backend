@@ -45,10 +45,14 @@ export const create = async (args: MutationCreateUserArgs) => {
   if (error) throw new GraphQLError(error);
 
   if (await emailExists(args.user.email))
-    throw new GraphQLError(EMAIL_ALREADY_EXISTS);
+    throw new GraphQLError("Email already exists", {
+      extensions: { code: EMAIL_ALREADY_EXISTS },
+    });
 
   if (await documentExists(args.user.taxId))
-    throw new GraphQLError(DOCUMENT_ALREADY_EXISTS);
+    throw new GraphQLError('Document already exists', {
+      extensions: { code: DOCUMENT_ALREADY_EXISTS },
+    });
 
   const encryptedPassword = String(await encryptPassword(password));
 
@@ -75,7 +79,7 @@ export const create = async (args: MutationCreateUserArgs) => {
  * @returns {Promise<{token: string, user: User}>} - Token and user
  */
 export const login = async (
-  args: MutationLoginArgs,
+  args: MutationLoginArgs
 ): Promise<{ token: string; user: User }> => {
   return await loginUser(args);
 };
@@ -95,7 +99,7 @@ export const update = async (args: MutationUpdateUserArgs) => {
     { user: rest },
     {
       abortEarly: false,
-    },
+    }
   );
 
   if (error) throw new GraphQLError(error);
