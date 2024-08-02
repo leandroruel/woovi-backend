@@ -4,11 +4,10 @@ import type {
   UpdateUserPayload,
 } from "@/generated/graphql";
 import { INVALID_PASSWORD, USER_NOT_FOUND } from "@/helpers/constants";
-import { decodeToken, JWT_EXPIRES_IN, signToken } from "@/helpers/jwt";
+import { signToken } from "@/helpers/jwt";
 import { verifyPassword } from "@/helpers/password";
 import UserModel from "@/models/User";
 import { GraphQLError } from "graphql";
-import { JwtPayload } from "jsonwebtoken";
 import { revokeToken } from "./token.service";
 
 /**

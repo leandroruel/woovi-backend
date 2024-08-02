@@ -1,8 +1,9 @@
-import type {
-  MutationCreateUserArgs,
-  MutationLoginArgs,
-  MutationUpdateUserArgs,
-  User,
+import {
+  UserRoleEnum,
+  type MutationCreateUserArgs,
+  type MutationLoginArgs,
+  type MutationUpdateUserArgs,
+  type User,
 } from "@/generated/graphql";
 import {
   DOCUMENT_ALREADY_EXISTS,

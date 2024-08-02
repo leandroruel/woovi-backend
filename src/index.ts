@@ -57,14 +57,16 @@ async function server({ typeDefs, resolvers }: any) {
   return { apolloServer, app };
 }
 
+app.use(
+  cors({
+    origin: "*",
+    allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
+    exposeHeaders: ["X-Request-Id"],
+  }),
+);
+
 server({ typeDefs, resolvers }).then(({ app }) => {
-  app.use(
-    cors({
-      origin: "*",
-      allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
-      exposeHeaders: ["X-Request-Id"],
-    }),
-  );
+  
 });
 
 export default app;

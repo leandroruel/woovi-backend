@@ -30,7 +30,6 @@ type User {
   password: String!
   birthdate: String!
   gender: UserEnum!
-  role: UserRoleEnum!
   createdAt: Date!
   updatedAt: Date!
 }
@@ -48,7 +47,6 @@ input CreateUserPayload {
   taxId: String!
   birthdate: String!
   gender: UserEnum!
-  role: UserRoleEnum!
 }
 
 input UpdateUserPayload {
@@ -58,7 +56,6 @@ input UpdateUserPayload {
   taxId: String
   birthdate: String
   gender: UserEnum
-  role: UserRoleEnum
 }
 
 input LoginInput {

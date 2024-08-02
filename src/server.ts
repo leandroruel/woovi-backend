@@ -34,6 +34,5 @@ app.use(koaBody({ multipart: true }));
 
 // Routes
 app.use(router.routes());
-app.use(router.allowedMethods());
 
 export default app;
