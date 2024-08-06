@@ -15,6 +15,8 @@ export const tokenExists = async (token: string): Promise<boolean> =>
  * @returns
  */
 export const revokeToken = async (token: string) => {
+  if(!token) return false;
+  
   const existingToken = await tokenExists(token);
 
   if (existingToken) return true;
