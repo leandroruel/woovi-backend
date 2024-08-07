@@ -1,16 +1,13 @@
 import type {
-  Account,
   CreateAccountPayload,
-  CreateTransactionPayload,
   MutationTransferAmountArgs,
 } from "@/generated/graphql";
 import { TransactionType, TransactionState } from "@/generated/graphql";
 import {
   INSUFFICIENT_BALANCE,
   SENDER_RECEIVER_NOT_FOUND,
-  TRANSACTION_BEING_PROCESSED,
 } from "@/helpers/constants";
-import AccountModel from "@/models/Account";
+import Account, { IAccount } from "@/models/Account";
 import { GraphQLError } from "graphql";
 import { createTransaction, getTransaction } from "./transaction.service";
 
@@ -20,19 +17,17 @@ import { createTransaction, getTransaction } from "./transaction.service";
  * @returns {Promise<Account>} - Account object
  */
 export const createAccount = async (
-  args: CreateAccountPayload,
-): Promise<Account> => {
+  args: CreateAccountPayload
+): Promise<IAccount> => {
   try {
     const { idempotencyId } = args;
-    const existingAccount: Account | null = await AccountModel.findOne({
+    const existingAccount = await Account.findOne({
       idempotencyId,
     });
 
     if (existingAccount) return existingAccount;
 
-    const account: Account | any = await AccountModel.create(args);
-
-    return account;
+    return await Account.create(args);
   } catch (error: any) {
     throw new GraphQLError(error?.message || error);
   }
@@ -65,91 +60,59 @@ const calculateChecksum = (accountNumber: number): number => {
 };
 
 /**
- * Create or return an existing transaction
- * @param transactionData {CreateTransactionPayload} - Transaction data payload
- * @returns {Promise<Transaction>} - Transaction object
- */
-const findOrCreateTransaction = async (
-  transactionData: CreateTransactionPayload,
-) => {
-  const { senderId, receiverId, idempotencyId, value } = transactionData;
-  const existingTransaction = await getTransaction(idempotencyId);
-
-  if (existingTransaction) {
-    if (existingTransaction.state === TransactionState.Done) {
-      return existingTransaction;
-    }
-
-    throw new GraphQLError(TRANSACTION_BEING_PROCESSED);
-  }
-
-  const newTransaction = createTransaction({
-    ...transactionData,
-    state: TransactionState.Done,
-  });
-
-  // atualiza o saldo das contas
-  await updateAccountBalance(senderId, receiverId, value);
-
-  return await newTransaction;
-};
-
-/**
- * Update the balance of the sender and receiver accounts
- * @param senderId {string} the sender id
- * @param receiverId {string} the receiver id
- * @param amount {number} the amount to transfer
- */
-const updateAccountBalance = async (
-  senderId: string,
-  receiverId: string,
-  amount: number,
-) => {
-  const senderAccount = await AccountModel.findOne({
-    userId: senderId,
-  });
-
-  const receiverAccount = await AccountModel.findOne({
-    userId: receiverId,
-  });
-
-  if (!senderAccount || !receiverAccount) {
-    throw new GraphQLError(SENDER_RECEIVER_NOT_FOUND);
-  }
-
-  if (senderAccount.balance < amount) {
-    throw new GraphQLError(INSUFFICIENT_BALANCE);
-  }
-
-  senderAccount.balance -= amount;
-  receiverAccount.balance += amount;
-
-  await senderAccount.save();
-  await receiverAccount.save();
-};
-
-/**
  * Transfer amount between accounts using idempotency key
- * source: https://stackoverflow.com/questions/71262703/implementing-idempotency-keys
- * @param data
+ * @param {MutationTransferAmountArgs} data - Transfer amount data
  */
 export const transferAmount = async (data: MutationTransferAmountArgs) => {
   const {
     transferAmountPayload: { senderId, receiverId, amount, idempotencyId },
   } = data;
 
-  const transactionData: CreateTransactionPayload = {
-    idempotencyId,
-    senderId,
-    receiverId,
-    value: amount,
-    type: TransactionType.Transfer,
-    state: TransactionState.Pending,
-    description: "Transfer between users",
-  };
-
   try {
-    return await findOrCreateTransaction(transactionData);
+    const existingTransaction = await getTransaction(idempotencyId);
+
+    if (existingTransaction) {
+      return {
+        success: true,
+        message: "Transaction already processed",
+        idempotencyId,
+      };
+    }
+
+    const senderAccount = await Account.findOne({
+      userId: senderId,
+    });
+
+    const receiverAccount = await Account.findOne({
+      userId: receiverId,
+    });
+
+    if (!senderAccount || !receiverAccount) {
+      throw new GraphQLError(SENDER_RECEIVER_NOT_FOUND);
+    }
+
+    if (senderAccount.balance < amount) {
+      throw new GraphQLError(INSUFFICIENT_BALANCE);
+    }
+
+    await senderAccount.updateOne({ $inc: { balance: -amount } });
+    await receiverAccount.updateOne({ $inc: { balance: amount } });
+
+    const newTransaction = await createTransaction( {
+      idempotencyId,
+      senderId,
+      receiverId,
+      amount,
+      type: TransactionType.Transfer,
+      state: TransactionState.Done,
+      description: "Transfer between users",
+    });
+
+    return {
+      success: true,
+      message: "Amount transferred successfully",
+      idempotencyId: newTransaction.idempotencyId,
+    };
   } catch (error: any) {
     throw new GraphQLError(error.message || error);
   }

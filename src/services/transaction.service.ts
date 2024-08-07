@@ -1,9 +1,34 @@
-import {
-  type CreateTransactionPayload,
-  TransactionType,
-} from "@/generated/graphql";
+import { type CreateTransactionPayload } from "@/generated/graphql";
 import Transaction from "@/models/Transaction";
 import { GraphQLError } from "graphql";
+
+/**
+ *  Get all transactions
+ * @returns {Promise<any>} - List of all transactions
+ */
+export const getAllTransactions = async () =>
+  await Transaction.where({
+    state: "done",
+  });
+
+/**
+ *  Get all transactions by user id
+ * @param {string} userId - User id
+ * @param {number} offset - Offset
+ * @param {number} limit - Limit
+ * @returns {Promise<any>} - List of all transactions
+ */
+export const getTransactionsByUserId = async (
+  userId: string,
+  offset: number,
+  limit: number
+) =>
+  await Transaction.find({ $or: [{ fromUser: userId }, { toUser: userId }] })
+    .sort({ createdAt: -1 })
+    .skip(offset)
+    .limit(limit)
+    .populate("fromUser")
+    .populate("toUser");
 
 /**
  * Check if transaction exists
@@ -11,7 +36,7 @@ import { GraphQLError } from "graphql";
  * @returns {Promise<Boolean>} - True if exists, false otherwise
  */
 export const transactionExists = async (
-  idempotencyId: string,
+  idempotencyId: string
 ): Promise<boolean> => Boolean(await Transaction.exists({ idempotencyId }));
 
 /**
@@ -24,35 +49,12 @@ export const getTransaction = async (idempotencyId: string) =>
 
 /**
  * Create a new transaction
- * @param data
- * @returns
+ * @param {CreateTransactionPayload} data - Transaction data
+ * @returns {Promise<any>} - Transaction object
  */
 export const createTransaction = async (data: CreateTransactionPayload) => {
   try {
-    const { idempotencyId } = data;
-
-    const existingTransaction = await Transaction.findOne({ idempotencyId });
-
-    if (existingTransaction) return existingTransaction;
-
-    const lastEntry = await Transaction.findOne()
-      .sort({ createdAt: -1 })
-      .limit(1);
-    const lastBalance = lastEntry ? lastEntry.value : 0;
-
-    const newBalance =
-      (data.type as TransactionType) === TransactionType.Deposit
-        ? lastBalance + data.value
-        : lastBalance - data.value;
-
-    const transaction = await Transaction.create({
-      ...data,
-      type: data.type,
-      state: data.state,
-      balance: newBalance,
-    });
-
-    return transaction;
+    return await Transaction.create(data);
   } catch (error: any) {
     throw new GraphQLError(error);
   }
