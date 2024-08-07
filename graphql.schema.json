@@ -15,7 +15,7 @@
         "fields": [
           {
             "name": "accountNumber",
-            "description": null,
+            "description": "The account number.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -31,7 +31,7 @@
           },
           {
             "name": "balance",
-            "description": null,
+            "description": "The user balance.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -47,7 +47,7 @@
           },
           {
             "name": "createdAt",
-            "description": null,
+            "description": "The account's created date.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -63,14 +63,14 @@
           },
           {
             "name": "idempotencyId",
-            "description": null,
+            "description": "The idempotency ID.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "UUID",
                 "ofType": null
               }
             },
@@ -79,7 +79,7 @@
           },
           {
             "name": "updatedAt",
-            "description": null,
+            "description": "The account's updated date.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -95,7 +95,7 @@
           },
           {
             "name": "userId",
-            "description": null,
+            "description": "The user ID.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -216,7 +216,7 @@
         "inputFields": [
           {
             "name": "accountNumber",
-            "description": null,
+            "description": "The account number.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -232,7 +232,7 @@
           },
           {
             "name": "balance",
-            "description": null,
+            "description": "The user balance.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -248,13 +248,13 @@
           },
           {
             "name": "idempotencyId",
-            "description": null,
+            "description": "The idempotency ID.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "UUID",
                 "ofType": null
               }
             },
@@ -264,7 +264,7 @@
           },
           {
             "name": "userId",
-            "description": null,
+            "description": "The user ID.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -290,6 +290,22 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "amount",
+            "description": "The value of the transaction.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "description",
             "description": "The description of the transaction.",
             "type": {
@@ -313,7 +329,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "UUID",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -378,22 +394,6 @@
               "ofType": {
                 "kind": "ENUM",
                 "name": "TransactionType",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "value",
-            "description": "The value of the transaction.",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
                 "ofType": null
               }
             },
@@ -1144,7 +1144,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "Transaction",
+              "name": "TransferAmountResponse",
               "ofType": null
             },
             "isDeprecated": false,
@@ -1493,9 +1493,58 @@
             "deprecationReason": null
           },
           {
-            "name": "transactions",
-            "description": "Get all transactions.",
-            "args": [],
+            "name": "transactionByUserId",
+            "description": "Get all transactions by a user ID.",
+            "args": [
+              {
+                "name": "limit",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "userId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -1677,6 +1726,22 @@
         "description": "Represents a transaction between two users.",
         "fields": [
           {
+            "name": "amount",
+            "description": "The amount of the transaction.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "createdAt",
             "description": "The date of the transaction.",
             "args": [],
@@ -1693,6 +1758,22 @@
             "deprecationReason": null
           },
           {
+            "name": "description",
+            "description": "The description of the transaction.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "idempotencyId",
             "description": "The unique ID of the transaction.",
             "args": [],
@@ -1701,7 +1782,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "UUID",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -1771,22 +1852,6 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
-          },
-          {
-            "name": "value",
-            "description": "The amount of the transaction.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -1797,7 +1862,7 @@
       {
         "kind": "ENUM",
         "name": "TransactionState",
-        "description": null,
+        "description": "Represents the state of a transaction.",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -1876,7 +1941,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "UUID",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -1918,6 +1983,65 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "TransferAmountResponse",
+        "description": "Represents the response of a transfer amount.",
+        "fields": [
+          {
+            "name": "idempotencyId",
+            "description": "The transaction Id.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "The message.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "success",
+            "description": "The success status.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -1979,7 +2103,7 @@
         "inputFields": [
           {
             "name": "accountNumber",
-            "description": null,
+            "description": "The account number.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1991,34 +2115,10 @@
           },
           {
             "name": "balance",
-            "description": null,
+            "description": "The user balance.",
             "type": {
               "kind": "SCALAR",
               "name": "Float",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "idempotencyId",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "userId",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ObjectID",
               "ofType": null
             },
             "defaultValue": null,

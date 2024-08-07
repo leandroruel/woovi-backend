@@ -190,11 +190,17 @@ export type Scalars = {
 
 export type Account = {
   __typename?: 'Account';
+  /** The account number. */
   accountNumber: Scalars['String']['output'];
+  /** The user balance. */
   balance: Scalars['Float']['output'];
+  /** The account's created date. */
   createdAt: Scalars['Date']['output'];
-  idempotencyId: Scalars['String']['output'];
+  /** The idempotency ID. */
+  idempotencyId: Scalars['UUID']['output'];
+  /** The account's updated date. */
   updatedAt: Scalars['Date']['output'];
+  /** The user ID. */
   userId: Scalars['ObjectID']['output'];
 };
 
@@ -205,18 +211,24 @@ export type AuthUser = {
 };
 
 export type CreateAccountPayload = {
+  /** The account number. */
   accountNumber: Scalars['String']['input'];
+  /** The user balance. */
   balance: Scalars['Float']['input'];
-  idempotencyId: Scalars['String']['input'];
+  /** The idempotency ID. */
+  idempotencyId: Scalars['UUID']['input'];
+  /** The user ID. */
   userId: Scalars['ObjectID']['input'];
 };
 
 /** Represents the payload to create a transaction. */
 export type CreateTransactionPayload = {
+  /** The value of the transaction. */
+  amount: Scalars['Float']['input'];
   /** The description of the transaction. */
   description: Scalars['String']['input'];
   /** The unique idempotency key. */
-  idempotencyId: Scalars['UUID']['input'];
+  idempotencyId: Scalars['String']['input'];
   /** The receiver ID. */
   receiverId: Scalars['ObjectID']['input'];
   /** The sender ID. */
@@ -225,8 +237,6 @@ export type CreateTransactionPayload = {
   state: TransactionState;
   /** The type of the transaction. */
   type: TransactionType;
-  /** The value of the transaction. */
-  value: Scalars['Int']['input'];
 };
 
 export type CreateUserPayload = {
@@ -256,7 +266,7 @@ export type Mutation = {
   login?: Maybe<AuthUser>;
   logout?: Maybe<Scalars['Boolean']['output']>;
   /** Transfer an amount between two accounts. */
-  transferAmount?: Maybe<Transaction>;
+  transferAmount?: Maybe<TransferAmountResponse>;
   /** Update an account. */
   updateAccount?: Maybe<Account>;
   updateUser?: Maybe<User>;
@@ -319,8 +329,8 @@ export type Query = {
   accounts?: Maybe<Array<Account>>;
   /** Get a transaction by its ID. */
   transaction: Transaction;
-  /** Get all transactions. */
-  transactions: Array<Transaction>;
+  /** Get all transactions by a user ID. */
+  transactionByUserId: Array<Transaction>;
   user?: Maybe<User>;
   users?: Maybe<Array<User>>;
 };
@@ -341,6 +351,13 @@ export type QueryTransactionArgs = {
 };
 
 
+export type QueryTransactionByUserIdArgs = {
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
@@ -348,10 +365,14 @@ export type QueryUserArgs = {
 /** Represents a transaction between two users. */
 export type Transaction = {
   __typename?: 'Transaction';
+  /** The amount of the transaction. */
+  amount: Scalars['Float']['output'];
   /** The date of the transaction. */
   createdAt: Scalars['Date']['output'];
+  /** The description of the transaction. */
+  description: Scalars['String']['output'];
   /** The unique ID of the transaction. */
-  idempotencyId: Scalars['UUID']['output'];
+  idempotencyId: Scalars['String']['output'];
   /** The unique ID of the transaction. */
   receiverId: Scalars['ObjectID']['output'];
   /** The unique ID of the transaction. */
@@ -360,10 +381,9 @@ export type Transaction = {
   state: TransactionState;
   /** The type of the transaction. */
   type: TransactionType;
-  /** The amount of the transaction. */
-  value: Scalars['Int']['output'];
 };
 
+/** Represents the state of a transaction. */
 export enum TransactionState {
   Done = 'done',
   Pending = 'pending'
@@ -381,18 +401,29 @@ export type TransferAmountPayload = {
   /** The amount to transfer. */
   amount: Scalars['Float']['input'];
   /** The idempotency ID. */
-  idempotencyId: Scalars['UUID']['input'];
+  idempotencyId: Scalars['String']['input'];
   /** The receiver ID. */
   receiverId: Scalars['ObjectID']['input'];
   /** The sender ID. */
   senderId: Scalars['ObjectID']['input'];
 };
 
+/** Represents the response of a transfer amount. */
+export type TransferAmountResponse = {
+  __typename?: 'TransferAmountResponse';
+  /** The transaction Id. */
+  idempotencyId: Scalars['String']['output'];
+  /** The message. */
+  message: Scalars['String']['output'];
+  /** The success status. */
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateAccountPayload = {
+  /** The account number. */
   accountNumber?: InputMaybe<Scalars['String']['input']>;
+  /** The user balance. */
   balance?: InputMaybe<Scalars['Float']['input']>;
-  idempotencyId?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['ObjectID']['input']>;
 };
 
 export type UpdateUserPayload = {
@@ -513,7 +544,6 @@ export type ResolversTypes = {
   CountryCode: ResolverTypeWrapper<Scalars['CountryCode']['output']>;
   CreateAccountPayload: CreateAccountPayload;
   CreateTransactionPayload: CreateTransactionPayload;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   CreateUserPayload: CreateUserPayload;
   Cuid: ResolverTypeWrapper<Scalars['Cuid']['output']>;
   Currency: ResolverTypeWrapper<Scalars['Currency']['output']>;
@@ -567,6 +597,7 @@ export type ResolversTypes = {
   PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']['output']>;
   PostalCode: ResolverTypeWrapper<Scalars['PostalCode']['output']>;
   Query: ResolverTypeWrapper<{}>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   RGB: ResolverTypeWrapper<Scalars['RGB']['output']>;
   RGBA: ResolverTypeWrapper<Scalars['RGBA']['output']>;
   RoutingNumber: ResolverTypeWrapper<Scalars['RoutingNumber']['output']>;
@@ -580,6 +611,7 @@ export type ResolversTypes = {
   TransactionState: TransactionState;
   TransactionType: TransactionType;
   TransferAmountPayload: TransferAmountPayload;
+  TransferAmountResponse: ResolverTypeWrapper<TransferAmountResponse>;
   URL: ResolverTypeWrapper<Scalars['URL']['output']>;
   USCurrency: ResolverTypeWrapper<Scalars['USCurrency']['output']>;
   UUID: ResolverTypeWrapper<Scalars['UUID']['output']>;
@@ -607,7 +639,6 @@ export type ResolversParentTypes = {
   CountryCode: Scalars['CountryCode']['output'];
   CreateAccountPayload: CreateAccountPayload;
   CreateTransactionPayload: CreateTransactionPayload;
-  Int: Scalars['Int']['output'];
   CreateUserPayload: CreateUserPayload;
   Cuid: Scalars['Cuid']['output'];
   Currency: Scalars['Currency']['output'];
@@ -661,6 +692,7 @@ export type ResolversParentTypes = {
   PositiveInt: Scalars['PositiveInt']['output'];
   PostalCode: Scalars['PostalCode']['output'];
   Query: {};
+  Int: Scalars['Int']['output'];
   RGB: Scalars['RGB']['output'];
   RGBA: Scalars['RGBA']['output'];
   RoutingNumber: Scalars['RoutingNumber']['output'];
@@ -672,6 +704,7 @@ export type ResolversParentTypes = {
   Timestamp: Scalars['Timestamp']['output'];
   Transaction: Transaction;
   TransferAmountPayload: TransferAmountPayload;
+  TransferAmountResponse: TransferAmountResponse;
   URL: Scalars['URL']['output'];
   USCurrency: Scalars['USCurrency']['output'];
   UUID: Scalars['UUID']['output'];
@@ -742,7 +775,7 @@ export type AccountResolvers<ContextType = any, ParentType extends ResolversPare
   accountNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   balance?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  idempotencyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  idempotencyId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   userId?: Resolver<ResolversTypes['ObjectID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -914,7 +947,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteUser?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthUser']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   logout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  transferAmount?: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<MutationTransferAmountArgs, 'transferAmountPayload'>>;
+  transferAmount?: Resolver<Maybe<ResolversTypes['TransferAmountResponse']>, ParentType, ContextType, RequireFields<MutationTransferAmountArgs, 'transferAmountPayload'>>;
   updateAccount?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<MutationUpdateAccountArgs, 'account' | 'userId'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'user'>>;
 };
@@ -976,7 +1009,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   accountByUserId?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountByUserIdArgs, 'userId'>>;
   accounts?: Resolver<Maybe<Array<ResolversTypes['Account']>>, ParentType, ContextType>;
   transaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
-  transactions?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
+  transactionByUserId?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionByUserIdArgs, 'limit' | 'offset' | 'userId'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
 };
@@ -1018,13 +1051,21 @@ export interface TimestampScalarConfig extends GraphQLScalarTypeConfig<Resolvers
 }
 
 export type TransactionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transaction'] = ResolversParentTypes['Transaction']> = {
+  amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  idempotencyId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  idempotencyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   receiverId?: Resolver<ResolversTypes['ObjectID'], ParentType, ContextType>;
   senderId?: Resolver<ResolversTypes['ObjectID'], ParentType, ContextType>;
   state?: Resolver<ResolversTypes['TransactionState'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TransactionType'], ParentType, ContextType>;
-  value?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TransferAmountResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransferAmountResponse'] = ResolversParentTypes['TransferAmountResponse']> = {
+  idempotencyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1135,6 +1176,7 @@ export type Resolvers<ContextType = any> = {
   TimeZone?: GraphQLScalarType;
   Timestamp?: GraphQLScalarType;
   Transaction?: TransactionResolvers<ContextType>;
+  TransferAmountResponse?: TransferAmountResponseResolvers<ContextType>;
   URL?: GraphQLScalarType;
   USCurrency?: GraphQLScalarType;
   UUID?: GraphQLScalarType;

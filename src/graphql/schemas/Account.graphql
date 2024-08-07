@@ -9,29 +9,49 @@ scalar ObjectID
 # Type: GraphQL Schema
 # Description: Account schema
 type Account {
-  idempotencyId: String!
+  "The idempotency ID."
+  idempotencyId: UUID!
+  "The account number."
   accountNumber: String!
+  "The user ID."
   userId: ObjectID!
+   "The user balance."
   balance: Float!
+  "The account's created date."
   createdAt: Date!
+  "The account's updated date."
   updatedAt: Date!
+}
+
+"Represents the response of a transfer amount."
+type TransferAmountResponse {
+  "The success status."
+  success: Boolean!
+  "The message."
+  message: String!
+  "The transaction Id."
+  idempotencyId: String!
 }
 
 # Type: GraphQL Schema
 # Description: Create account payload
 input CreateAccountPayload {
-  idempotencyId: String!
+  "The idempotency ID."
+  idempotencyId: UUID!
+  "The account number."
   accountNumber: String!
+  "The user ID."
   userId: ObjectID!
+  "The user balance."
   balance: Float!
 }
 
 # Type: GraphQL Schema
 # Description: Update account payload
 input UpdateAccountPayload {
-  idempotencyId: String
+  "The account number."
   accountNumber: String
-  userId: ObjectID
+  "The user balance."
   balance: Float
 }
 
@@ -44,7 +64,7 @@ input TransferAmountPayload {
   "The amount to transfer."
   amount: Float!
   "The idempotency ID."
-  idempotencyId: UUID!
+  idempotencyId: String!
 }
 
 type Query {
@@ -64,5 +84,5 @@ type Mutation {
   "Delete an account."
   deleteAccount(id: ObjectID!): Boolean @auth(requires: User)
   "Transfer an amount between two accounts."
-  transferAmount(transferAmountPayload: TransferAmountPayload!): Transaction @auth(requires: User)
+  transferAmount(transferAmountPayload: TransferAmountPayload!): TransferAmountResponse @auth(requires: User)
 }

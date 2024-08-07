@@ -5,6 +5,7 @@ enum TransactionType {
  withdraw
 }
 
+"Represents the state of a transaction."
 enum TransactionState {
   pending,
   done
@@ -17,27 +18,29 @@ type Transaction {
   "The unique ID of the transaction."
   receiverId: ObjectID!
   "The unique ID of the transaction."
-  idempotencyId: UUID!
+  idempotencyId: String!
   "The amount of the transaction."
-  value: Int!
+  amount: Float!
   "The type of the transaction."
   type: TransactionType!
   "The state of the transaction."
   state: TransactionState!
   "The date of the transaction."
   createdAt: Date!
+  "The description of the transaction."
+  description: String!
 }
 
 "Represents the payload to create a transaction."
 input CreateTransactionPayload {
   "The unique idempotency key."
-  idempotencyId: UUID!
+  idempotencyId: String!
   "The sender ID."
   senderId: ObjectID!
   "The receiver ID."
   receiverId: ObjectID!
   "The value of the transaction."
-  value: Int!
+  amount: Float!
   "The type of the transaction."
   type: TransactionType!
   "The state of the transaction."
@@ -49,8 +52,8 @@ input CreateTransactionPayload {
 type Query {
   "Get a transaction by its ID."
   transaction(id: ID!): Transaction!
-  "Get all transactions."
-  transactions: [Transaction!]!
+  "Get all transactions by a user ID."
+  transactionByUserId(userId: ID!, offset: Int!, limit: Int!): [Transaction!]!
 }
 
 type Mutation {

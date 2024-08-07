@@ -1,18 +1,20 @@
+import { getTransactionsByUserId } from "@/services/transaction.service";
+
 const transationResolver = {
-	Query: {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		transactions: async (_: any, args: any, context: any) => {
-			const { dataSources } = context;
-			return dataSources.transactionAPI.getTransactions();
-		},
-	},
-	Mutation: {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		createTransaction: async (_: any, args: any, context: any) => {
-			const { dataSources } = context;
-			return dataSources.transactionAPI.createTransaction(args);
-		},
-	},
+  Query: {
+    transactionByUserId: async (
+      _: any,
+      { userId, offset, limit }: any,
+      context: any
+    ) => {
+      return await getTransactionsByUserId(userId, offset, limit);
+    },
+  },
+  Mutation: {
+    createTransaction: async (_: any, args: any, context: any) => {
+      // code...
+    },
+  },
 };
 
 export default transationResolver;

@@ -2,6 +2,17 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
+interface ITransaction extends mongoose.Document {
+  senderId: mongoose.Schema.Types.ObjectId;
+  receiverId: mongoose.Schema.Types.ObjectId;
+  idempotencyId: string;
+  amount: number;
+  type: "transfer" | "deposit" | "withdraw";
+  state: "done" | "pending";
+  description: string;
+  createdAt: Date;
+}
+
 const transactionSchema = new Schema({
   senderId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -14,7 +25,7 @@ const transactionSchema = new Schema({
     required: true,
   },
   idempotencyId: { type: String, required: true, unique: true },
-  value: { type: Number, required: true },
+  amount: { type: Number, required: true },
   type: {
     type: String,
     enum: ["transfer", "deposit", "withdraw"],
@@ -25,9 +36,10 @@ const transactionSchema = new Schema({
     enum: ["done", "pending"],
     default: "pending",
   },
+  description: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 
-const Transaction = model("Transaction", transactionSchema);
+const Transaction = model<ITransaction>("Transaction", transactionSchema);
 
 export default Transaction;
