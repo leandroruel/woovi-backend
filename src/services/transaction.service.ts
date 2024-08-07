@@ -22,13 +22,22 @@ export const getTransactionsByUserId = async (
   userId: string,
   offset: number,
   limit: number
-) =>
-  await Transaction.find({ $or: [{ fromUser: userId }, { toUser: userId }] })
-    .sort({ createdAt: -1 })
-    .skip(offset)
-    .limit(limit)
-    .populate("fromUser")
-    .populate("toUser");
+) => {
+  try {
+    return await Transaction.find({
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    })
+      .sort({ createdAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      .populate("senderId")
+      .populate("receiverId");
+  } catch (error: any) {
+    throw new GraphQLError(
+      error.message || "Failed to retrieve user transactions."
+    );
+  }
+};
 
 /**
  * Check if transaction exists
@@ -56,6 +65,6 @@ export const createTransaction = async (data: CreateTransactionPayload) => {
   try {
     return await Transaction.create(data);
   } catch (error: any) {
-    throw new GraphQLError(error);
+    throw new GraphQLError(error.message || "Failed to create transaction.");
   }
 };

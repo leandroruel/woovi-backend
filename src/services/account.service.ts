@@ -29,7 +29,7 @@ export const createAccount = async (
 
     return await Account.create(args);
   } catch (error: any) {
-    throw new GraphQLError(error?.message || error);
+    throw new GraphQLError(error.message || "Failed to create account.");
   }
 };
 
@@ -98,7 +98,7 @@ export const transferAmount = async (data: MutationTransferAmountArgs) => {
     await senderAccount.updateOne({ $inc: { balance: -amount } });
     await receiverAccount.updateOne({ $inc: { balance: amount } });
 
-    const newTransaction = await createTransaction( {
+    const newTransaction = await createTransaction({
       idempotencyId,
       senderId,
       receiverId,
@@ -114,6 +114,6 @@ export const transferAmount = async (data: MutationTransferAmountArgs) => {
       idempotencyId: newTransaction.idempotencyId,
     };
   } catch (error: any) {
-    throw new GraphQLError(error.message || error);
+    throw new GraphQLError(error.message || "Failed to transfer amount.");
   }
 };
