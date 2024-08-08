@@ -29,9 +29,7 @@ export const getTransactionsByUserId = async (
     })
       .sort({ createdAt: -1 })
       .skip(offset)
-      .limit(limit)
-      .populate("senderId")
-      .populate("receiverId");
+      .limit(limit);
   } catch (error: any) {
     throw new GraphQLError(
       error.message || "Failed to retrieve user transactions."
