@@ -3,6 +3,17 @@ import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 const { Schema, model } = mongoose;
 
+interface IUser {
+  name: string;
+  tax_id: string;
+  email: string;
+  password: string;
+  password_reset_token?: string
+  gender?: 'Male' | 'Female';
+  birthdate: Date;
+  role: 'Admin' | 'User';
+}
+
 const userSchema = new Schema(
   {
     name: {
@@ -46,6 +57,6 @@ const userSchema = new Schema(
 userSchema.plugin(mongoosePaginate);
 userSchema.index({ email: -1 }, { unique: true });
 
-const User = model("Users", userSchema);
+const User = model<IUser>("Users", userSchema);
 
 export default User;

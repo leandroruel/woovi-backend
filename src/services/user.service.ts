@@ -1,6 +1,7 @@
 import type {
   CreateUserPayload,
   MutationLoginArgs,
+  QueryUserByEmailOrTaxIdArgs,
   UpdateUserPayload,
 } from "@/generated/graphql";
 import { INVALID_PASSWORD, USER_NOT_FOUND } from "@/helpers/constants";
@@ -97,3 +98,19 @@ export const logoutUser = async (token: string) => {
 
   return await revokeToken(token);
 };
+
+/**
+ *  Find a user by email or tax id
+ * @param searchString {string} - search string
+ * @returns {Promise<Object>} - user data
+ */
+export const userByEmailOrTaxId = async (searchString: QueryUserByEmailOrTaxIdArgs) => {
+  const filter = {
+    "$or": [
+      { "email": { "$regex": searchString, "$options": "i" } },
+      { "tax_id": { "$regex": searchString, "$options": "i" } }
+    ]
+  };
+
+  return await UserModel.findOne(filter);
+}
