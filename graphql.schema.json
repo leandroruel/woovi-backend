@@ -409,7 +409,7 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "CreateUserPayload",
-        "description": null,
+        "description": "Represents the input to create a user",
         "fields": null,
         "inputFields": [
           {
@@ -856,7 +856,7 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "LoginInput",
-        "description": null,
+        "description": "Represents the input to login a user",
         "fields": null,
         "inputFields": [
           {
@@ -995,7 +995,7 @@
           },
           {
             "name": "createUser",
-            "description": null,
+            "description": "Create a new user",
             "args": [
               {
                 "name": "user",
@@ -1053,7 +1053,7 @@
           },
           {
             "name": "deleteUser",
-            "description": null,
+            "description": "Delete a user by id",
             "args": [
               {
                 "name": "id",
@@ -1082,7 +1082,7 @@
           },
           {
             "name": "login",
-            "description": null,
+            "description": "Login a user",
             "args": [
               {
                 "name": "input",
@@ -1111,7 +1111,7 @@
           },
           {
             "name": "logout",
-            "description": null,
+            "description": "Logout a user",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1197,7 +1197,7 @@
           },
           {
             "name": "updateUser",
-            "description": null,
+            "description": "Update a user by id",
             "args": [
               {
                 "name": "id",
@@ -1567,7 +1567,7 @@
           },
           {
             "name": "user",
-            "description": null,
+            "description": "Get a user by id",
             "args": [
               {
                 "name": "id",
@@ -1595,8 +1595,37 @@
             "deprecationReason": null
           },
           {
+            "name": "userByEmailOrTaxId",
+            "description": "Get a user by email or taxId",
+            "args": [
+              {
+                "name": "query",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "users",
-            "description": null,
+            "description": "Get all users",
             "args": [],
             "type": {
               "kind": "LIST",
@@ -2133,7 +2162,7 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "UpdateUserPayload",
-        "description": null,
+        "description": "Represents the input to update a user",
         "fields": null,
         "inputFields": [
           {

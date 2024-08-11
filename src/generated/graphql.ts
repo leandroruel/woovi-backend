@@ -239,6 +239,7 @@ export type CreateTransactionPayload = {
   type: TransactionType;
 };
 
+/** Represents the input to create a user */
 export type CreateUserPayload = {
   birthdate: Scalars['String']['input'];
   email: Scalars['String']['input'];
@@ -248,6 +249,7 @@ export type CreateUserPayload = {
   taxId: Scalars['String']['input'];
 };
 
+/** Represents the input to login a user */
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -259,16 +261,21 @@ export type Mutation = {
   createAccount?: Maybe<Account>;
   /** Create a transaction record. */
   createTransaction: Transaction;
+  /** Create a new user */
   createUser?: Maybe<AuthUser>;
   /** Delete an account. */
   deleteAccount?: Maybe<Scalars['Boolean']['output']>;
+  /** Delete a user by id */
   deleteUser?: Maybe<Scalars['Boolean']['output']>;
+  /** Login a user */
   login?: Maybe<AuthUser>;
+  /** Logout a user */
   logout?: Maybe<Scalars['Boolean']['output']>;
   /** Transfer an amount between two accounts. */
   transferAmount?: Maybe<TransferAmountResponse>;
   /** Update an account. */
   updateAccount?: Maybe<Account>;
+  /** Update a user by id */
   updateUser?: Maybe<User>;
 };
 
@@ -331,7 +338,11 @@ export type Query = {
   transaction: Transaction;
   /** Get all transactions by a user ID. */
   transactionByUserId: Array<Transaction>;
+  /** Get a user by id */
   user?: Maybe<User>;
+  /** Get a user by email or taxId */
+  userByEmailOrTaxId?: Maybe<User>;
+  /** Get all users */
   users?: Maybe<Array<User>>;
 };
 
@@ -360,6 +371,11 @@ export type QueryTransactionByUserIdArgs = {
 
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryUserByEmailOrTaxIdArgs = {
+  query: Scalars['String']['input'];
 };
 
 /** Represents a transaction between two users. */
@@ -426,6 +442,7 @@ export type UpdateAccountPayload = {
   balance?: InputMaybe<Scalars['Float']['input']>;
 };
 
+/** Represents the input to update a user */
 export type UpdateUserPayload = {
   birthdate?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
@@ -1011,6 +1028,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   transaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
   transactionByUserId?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionByUserIdArgs, 'limit' | 'offset' | 'userId'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  userByEmailOrTaxId?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserByEmailOrTaxIdArgs, 'query'>>;
   users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
 };
 

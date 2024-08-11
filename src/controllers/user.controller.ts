@@ -1,4 +1,5 @@
 import {
+  QueryUserByEmailOrTaxIdArgs,
   UserRoleEnum,
   type MutationCreateUserArgs,
   type MutationLoginArgs,
@@ -22,6 +23,7 @@ import {
   loginUser,
   logoutUser,
   updateUser,
+  userByEmailOrTaxId,
 } from "@/services/user.service";
 import {
   validateUserCreate,
@@ -50,7 +52,7 @@ export const create = async (args: MutationCreateUserArgs) => {
     });
 
   if (await documentExists(args.user.taxId))
-    throw new GraphQLError('Document already exists', {
+    throw new GraphQLError("Document already exists", {
       extensions: { code: DOCUMENT_ALREADY_EXISTS },
     });
 
@@ -133,4 +135,13 @@ export const logout = async (token: string): Promise<boolean> => {
   return await logoutUser(token);
 };
 
-export default { create, update, login, logout };
+/**
+ * Search user by email or tax id
+ * @param args {Object} - User data
+ * @returns {Promise<IUser>} - User
+ */
+export const searchUserByEmailOrTaxId = async (args: QueryUserByEmailOrTaxIdArgs) => {
+  return await userByEmailOrTaxId(args);
+};
+
+export default { create, update, login, logout, searchUserByEmailOrTaxId };

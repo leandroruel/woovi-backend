@@ -40,6 +40,7 @@ type AuthUser {
   token: String!
 }
 
+"Represents the input to create a user"
 input CreateUserPayload {
   name: String!
   email: String!
@@ -49,6 +50,7 @@ input CreateUserPayload {
   gender: UserEnum!
 }
 
+"Represents the input to update a user"
 input UpdateUserPayload {
   name: String
   email: String
@@ -58,20 +60,30 @@ input UpdateUserPayload {
   gender: UserEnum
 }
 
+"Represents the input to login a user"
 input LoginInput {
   email: String!
   password: String!
 }
 
 type Query {
-  user(id: ID!): User
-  users: [User!]
+  "Get a user by id"
+  user(id: ID!): User @auth(requires: User)
+  "Get all users"
+  users: [User!] @auth(requires: User)
+  "Get a user by email or taxId"
+  userByEmailOrTaxId(query: String!): User @auth(requires: User)
 }
 
 type Mutation {
-  createUser(user: CreateUserPayload!): AuthUser 
+  "Create a new user"
+  createUser(user: CreateUserPayload!): AuthUser
+  "Update a user by id" 
   updateUser(user: UpdateUserPayload!, id: ID!): User @auth(requires: User)
+  "Delete a user by id"
   deleteUser(id: ID!): Boolean @auth(requires: Admin)
+  "Login a user"
   login(input: LoginInput!): AuthUser
+  "Logout a user"
   logout: Boolean
 }
