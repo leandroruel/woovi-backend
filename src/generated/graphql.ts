@@ -207,7 +207,6 @@ export type Account = {
 export type AuthUser = {
   __typename?: 'AuthUser';
   token: Scalars['String']['output'];
-  user: User;
 };
 
 export type CreateAccountPayload = {
@@ -334,6 +333,7 @@ export type Query = {
   accountByUserId?: Maybe<Account>;
   /** Get all accounts. */
   accounts?: Maybe<Array<Account>>;
+  me?: Maybe<User>;
   /** Get a transaction by its ID. */
   transaction: Transaction;
   /** Get all transactions by a user ID. */
@@ -454,13 +454,14 @@ export type UpdateUserPayload = {
 
 export type User = {
   __typename?: 'User';
+  accountNumber: Scalars['String']['output'];
+  balance: Scalars['Float']['output'];
   birthdate: Scalars['String']['output'];
   createdAt: Scalars['Date']['output'];
   email: Scalars['String']['output'];
   gender: UserEnum;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  password: Scalars['String']['output'];
   taxId: Scalars['String']['output'];
   updatedAt: Scalars['Date']['output'];
 };
@@ -804,7 +805,6 @@ export interface AccountNumberScalarConfig extends GraphQLScalarTypeConfig<Resol
 
 export type AuthUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthUser'] = ResolversParentTypes['AuthUser']> = {
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1025,6 +1025,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountArgs, 'id'>>;
   accountByUserId?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountByUserIdArgs, 'userId'>>;
   accounts?: Resolver<Maybe<Array<ResolversTypes['Account']>>, ParentType, ContextType>;
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   transaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
   transactionByUserId?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionByUserIdArgs, 'limit' | 'offset' | 'userId'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
@@ -1108,13 +1109,14 @@ export interface UnsignedIntScalarConfig extends GraphQLScalarTypeConfig<Resolve
 }
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  accountNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  balance?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   birthdate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   gender?: Resolver<ResolversTypes['UserEnum'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   taxId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

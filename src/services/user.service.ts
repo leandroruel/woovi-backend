@@ -5,7 +5,7 @@ import type {
   UpdateUserPayload,
 } from "@/generated/graphql";
 import { INVALID_PASSWORD, USER_NOT_FOUND } from "@/helpers/constants";
-import { signToken } from "@/helpers/jwt";
+import { decodeToken, signToken } from "@/helpers/jwt";
 import { verifyPassword } from "@/helpers/password";
 import UserModel from "@/models/User";
 import { GraphQLError } from "graphql";
@@ -82,11 +82,9 @@ export const loginUser = async (args: MutationLoginArgs): Promise<any> => {
   }
 
   const token = signToken({ userId: user.id, role: user.role }) || "";
-  const userWithAccount = getUserWithAccount(user.id)
 
   return {
     token,
-    user: userWithAccount,
   };
 };
 
@@ -122,7 +120,7 @@ export const userByEmailOrTaxId = async (
 /**
  * Get and returns a user with account info
  * @param userId {string} - The user id
- * @returns 
+ * @returns
  */
 export const getUserWithAccount = async (userId: string) => {
   const userAggregate = await UserModel.aggregate([
@@ -144,9 +142,14 @@ export const getUserWithAccount = async (userId: string) => {
     },
     {
       $project: {
-        id: '$_id',
+        id: "$_id",
         name: 1,
         email: 1,
+        tax_id: 1,
+        gender: 1,
+        birthdate: 1,
+        createdAt: 1,
+        updatedAt: 1,
         balance: "$account_info.balance",
         accountNumber: "$account_info.accountNumber",
       },
@@ -154,4 +157,23 @@ export const getUserWithAccount = async (userId: string) => {
   ]);
 
   return userAggregate[0] || null;
+};
+
+/**
+ * Returns a user based in a auth token
+ * @param token {string} - The authentication token
+ * @returns {Promise{IUser}}
+ */
+export const me = async (token: string) => {
+  console.log(token)
+  const decodedToken = decodeToken(token);
+  const userId = decodedToken?.userId;
+
+  if (userId) {
+    const user = await getUserWithAccount(userId);
+    console.log(user)
+    return user
+  }
+
+  return null;
 };

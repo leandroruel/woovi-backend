@@ -37,7 +37,6 @@ type User {
 
 # AuthUser is an object type that represents a user with a token
 type AuthUser {
-  user: User!
   token: String!
 }
 

@@ -1,6 +1,6 @@
 import UserController from "@/controllers/user.controller";
 import User from "@/models/User";
-import { getUserWithAccount } from "@/services/user.service";
+import { getUserWithAccount, me } from "@/services/user.service";
 
 const userResolver = {
   Query: {
@@ -12,6 +12,9 @@ const userResolver = {
     },
     async userByEmailOrTaxId(_: any, { query }: any) {
       return await UserController.searchUserByEmailOrTaxId(query);
+    },
+    async me(_: any, args: any, ctx: any) {
+      return await me(ctx.token);
     },
   },
   Mutation: {
