@@ -10,6 +10,7 @@ import { verifyPassword } from "@/helpers/password";
 import UserModel from "@/models/User";
 import { GraphQLError } from "graphql";
 import { revokeToken } from "./token.service";
+import mongoose from "mongoose";
 
 /**
  * Check if email exists on database
@@ -45,14 +46,14 @@ export const createUser = async (body: CreateUserPayload) =>
  */
 export const updateUser = async (
   id: string,
-  input: UpdateUserPayload,
+  input: UpdateUserPayload
 ): Promise<object | null> =>
   await UserModel.findByIdAndUpdate(
     id,
     { ...input, tax_id: input.taxId },
     {
       new: true,
-    },
+    }
   );
 
 /**
@@ -104,13 +105,52 @@ export const logoutUser = async (token: string) => {
  * @param searchString {string} - search string
  * @returns {Promise<Object>} - user data
  */
-export const userByEmailOrTaxId = async (searchString: QueryUserByEmailOrTaxIdArgs) => {
+export const userByEmailOrTaxId = async (
+  searchString: QueryUserByEmailOrTaxIdArgs
+) => {
   const filter = {
-    "$or": [
-      { "email": { "$regex": searchString, "$options": "i" } },
-      { "tax_id": { "$regex": searchString, "$options": "i" } }
-    ]
+    $or: [
+      { email: { $regex: searchString, $options: "i" } },
+      { tax_id: { $regex: searchString, $options: "i" } },
+    ],
   };
 
   return await UserModel.findOne(filter);
-}
+};
+
+/**
+ * Get and returns a user with account info
+ * @param userId {string} - The user id
+ * @returns 
+ */
+export const getUserWithAccount = async (userId: string) => {
+  const userAggregate = await UserModel.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "accounts",
+        localField: "_id",
+        foreignField: "userId",
+        as: "account_info",
+      },
+    },
+    {
+      $unwind: { path: "$account_info", preserveNullAndEmptyArrays: true },
+    },
+    {
+      $project: {
+        id: '$_id',
+        name: 1,
+        email: 1,
+        balance: "$account_info.balance",
+        accountNumber: "$account_info.accountNumber",
+      },
+    },
+  ]);
+
+  return userAggregate[0] || null;
+};

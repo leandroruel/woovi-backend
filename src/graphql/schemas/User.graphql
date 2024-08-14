@@ -27,9 +27,10 @@ type User {
   taxId: String!
   name: String!
   email: String!
-  password: String!
   birthdate: String!
   gender: UserEnum!
+  balance: Float!
+  accountNumber: String!
   createdAt: Date!
   updatedAt: Date!
 }
@@ -67,6 +68,7 @@ input LoginInput {
 }
 
 type Query {
+  me: User @auth(requires: User)
   "Get a user by id"
   user(id: ID!): User @auth(requires: User)
   "Get all users"

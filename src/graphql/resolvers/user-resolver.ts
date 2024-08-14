@@ -1,5 +1,6 @@
 import UserController from "@/controllers/user.controller";
 import User from "@/models/User";
+import { getUserWithAccount } from "@/services/user.service";
 
 const userResolver = {
   Query: {
@@ -7,7 +8,7 @@ const userResolver = {
       return await User.find();
     },
     async user(_: any, { id }: any) {
-      return await User.findById(id);
+      return await getUserWithAccount(id);
     },
     async userByEmailOrTaxId(_: any, { query }: any) {
       return await UserController.searchUserByEmailOrTaxId(query);
