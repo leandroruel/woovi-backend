@@ -82,10 +82,11 @@ export const loginUser = async (args: MutationLoginArgs): Promise<any> => {
   }
 
   const token = signToken({ userId: user.id, role: user.role }) || "";
+  const userWithAccount = getUserWithAccount(user.id)
 
   return {
     token,
-    user,
+    user: userWithAccount,
   };
 };
 
