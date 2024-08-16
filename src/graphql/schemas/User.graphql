@@ -78,7 +78,7 @@ type Query {
 
 type Mutation {
   "Create a new user"
-  createUser(user: CreateUserPayload!): AuthUser
+  createUser(user: CreateUserPayload!): User
   "Update a user by id" 
   updateUser(user: UpdateUserPayload!, id: ID!): User @auth(requires: User)
   "Delete a user by id"

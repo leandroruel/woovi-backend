@@ -67,12 +67,7 @@ export const create = async (args: MutationCreateUserArgs) => {
     accountNumber: generateAccountNumber(),
   });
 
-  const token = signToken({ userId: user.id, role: user.role });
-
-  return {
-    token,
-    user,
-  };
+  return { user };
 };
 
 /**
@@ -140,7 +135,9 @@ export const logout = async (token: string): Promise<boolean> => {
  * @param args {Object} - User data
  * @returns {Promise<IUser>} - User
  */
-export const searchUserByEmailOrTaxId = async (args: QueryUserByEmailOrTaxIdArgs) => {
+export const searchUserByEmailOrTaxId = async (
+  args: QueryUserByEmailOrTaxIdArgs
+) => {
   return await userByEmailOrTaxId(args);
 };
 
