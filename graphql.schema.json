@@ -1000,7 +1000,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "AuthUser",
+              "name": "User",
               "ofType": null
             },
             "isDeprecated": false,

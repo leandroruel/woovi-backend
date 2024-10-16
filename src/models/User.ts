@@ -8,10 +8,10 @@ interface IUser {
   tax_id: string;
   email: string;
   password: string;
-  password_reset_token?: string
-  gender?: 'Male' | 'Female';
+  password_reset_token?: string;
+  gender?: "Male" | "Female";
   birthdate: Date;
-  role: 'Admin' | 'User';
+  role: "Admin" | "User";
 }
 
 const userSchema = new Schema(
@@ -51,7 +51,8 @@ const userSchema = new Schema(
     timestamps: true,
     collation: { locale: "pt", strength: 2 },
     default: getCurrentTimeStamp(),
-  },
+    versionKey: false,
+  }
 );
 
 userSchema.plugin(mongoosePaginate);

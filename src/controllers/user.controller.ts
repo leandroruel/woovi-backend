@@ -1,10 +1,11 @@
 import {
-  QueryUserByEmailOrTaxIdArgs,
+  type QueryUserByEmailOrTaxIdArgs,
   UserRoleEnum,
   type MutationCreateUserArgs,
   type MutationLoginArgs,
   type MutationUpdateUserArgs,
   type User,
+  UserEnum,
 } from "@/generated/graphql";
 import {
   DOCUMENT_ALREADY_EXISTS,
@@ -58,16 +59,20 @@ export const create = async (args: MutationCreateUserArgs) => {
 
   const encryptedPassword = String(await encryptPassword(password));
 
-  const user = await createUser({ ...rest, password: encryptedPassword });
+  const {_id, ...user } = await createUser({ ...rest, password: encryptedPassword });
 
+  // Cria uma conta para o usuario novo
   await createAccount({
-    userId: user.id,
+    userId: String(_id),
     balance: 100,
     idempotencyId: uuidv4(),
     accountNumber: generateAccountNumber(),
   });
 
-  return { user };
+  return {
+    id: _id,
+    ...user
+  }
 };
 
 /**
