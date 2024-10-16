@@ -261,7 +261,7 @@ export type Mutation = {
   /** Create a transaction record. */
   createTransaction: Transaction;
   /** Create a new user */
-  createUser?: Maybe<AuthUser>;
+  createUser?: Maybe<User>;
   /** Delete an account. */
   deleteAccount?: Maybe<Scalars['Boolean']['output']>;
   /** Delete a user by id */
@@ -959,7 +959,7 @@ export interface MacScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createAccount?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<MutationCreateAccountArgs, 'account'>>;
   createTransaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationCreateTransactionArgs, 'payload'>>;
-  createUser?: Resolver<Maybe<ResolversTypes['AuthUser']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
+  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
   deleteAccount?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteAccountArgs, 'id'>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthUser']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;

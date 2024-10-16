@@ -165,14 +165,12 @@ export const getUserWithAccount = async (userId: string) => {
  * @returns {Promise{IUser}}
  */
 export const me = async (token: string) => {
-  console.log(token)
   const decodedToken = decodeToken(token);
   const userId = decodedToken?.userId;
 
   if (userId) {
     const user = await getUserWithAccount(userId);
-    console.log(user)
-    return user
+    return user;
   }
 
   return null;

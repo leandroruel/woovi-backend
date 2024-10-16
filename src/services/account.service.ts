@@ -7,7 +7,7 @@ import {
   INSUFFICIENT_BALANCE,
   SENDER_RECEIVER_NOT_FOUND,
 } from "@/helpers/constants";
-import Account, { IAccount } from "@/models/Account";
+import Account, { type IAccount } from "@/models/Account";
 import { GraphQLError } from "graphql";
 import { createTransaction, getTransaction } from "./transaction.service";
 
