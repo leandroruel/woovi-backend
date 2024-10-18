@@ -1,6 +1,6 @@
 import { getTransactionsByUserId } from "@/transaction"
 
-const transationResolver = {
+const transactionResolver = {
   Query: {
     transactionByUserId: async (
       _: any,
@@ -17,4 +17,4 @@ const transationResolver = {
   },
 };
 
-export default transationResolver;
+export default transactionResolver;
