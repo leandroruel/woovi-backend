@@ -100,7 +100,6 @@ export const updateUser = async (
     if (taxIdExists) throw new GraphQLError(DOCUMENT_ALREADY_EXISTS);
   }
 
-  // Se a senha for fornecida, criptografa e atualiza
   if (password) {
     const encryptedPassword = String(await encryptPassword(password));
 
@@ -121,7 +120,10 @@ export const updateUser = async (
 
   if (!updatedUser) return null;
 
-  return updatedUser;
+  // avoid returning the password
+  const { password: pass, ...user } = updatedUser;
+
+  return { ...user };
 };
 
 /**
