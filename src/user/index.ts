@@ -3,7 +3,6 @@ import type {
   MutationCreateUserArgs,
   MutationUpdateUserArgs,
   QueryUserByEmailOrTaxIdArgs,
-  UpdateUserPayload,
 } from "@/generated/graphql";
 import {
   DOCUMENT_ALREADY_EXISTS,
@@ -21,24 +20,6 @@ import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
 /**
- * Check if email exists on database
- * @param email {string} - email to check
- * @returns {Promise<Boolean | null>}
- * @example await emailExists('jhon.doe@company.com')
- */
-export const emailExists = async (email: string): Promise<boolean> =>
-  Boolean(await UserModel.exists({ email }));
-
-/**
- * Check if document exists on database
- * @param taxId {string} - tax id to check
- * @returns {Promise<Boolean | null>}
- * @example await documentExists('1234567890')
- */
-export const documentExists = async (taxId: string): Promise<boolean> =>
-  Boolean(await UserModel.exists({ tax_id: taxId }));
-
-/**
  * Create a new user
  * @param body {Object} - user data
  * @returns
@@ -52,12 +33,12 @@ export const createUser = async (args: MutationCreateUserArgs) => {
 
   if (error) throw new GraphQLError(error);
 
-  if (await emailExists(args.user.email))
+  if (await UserModel.findOne({ email: args.user.email }))
     throw new GraphQLError("Email already exists", {
       extensions: { code: EMAIL_ALREADY_EXISTS },
     });
 
-  if (await documentExists(args.user.taxId))
+  if (await UserModel.findOne({ tax_id: args.user.taxId }))
     throw new GraphQLError("Document already exists", {
       extensions: { code: DOCUMENT_ALREADY_EXISTS },
     });
@@ -83,56 +64,65 @@ export const createUser = async (args: MutationCreateUserArgs) => {
     ...user,
   };
 };
-
 /**
- *
- * @param id {string} - user id
- * @param input {Object} - user data
- * @returns {Promise<Object>}
+ * Atualiza um usuário
+ * @param args {MutationUpdateUserArgs} campos a serem atualizados
+ * @returns {User} usuario a ser atualizado
  */
 export const updateUser = async (
   args: MutationUpdateUserArgs
 ): Promise<object | null> => {
   const {
     id,
-    user: { password, ...rest },
+    user: { password, email, taxId, ...rest },
   } = args;
 
+  // Validação do objeto de atualização
   const { error } = await validateUserUpdate.validateAsync(
-    { user: rest },
-    {
-      abortEarly: false,
-    }
+    { user: { email, taxId, ...rest } },
+    { abortEarly: false }
   );
 
   if (error) throw new GraphQLError(error);
 
-  if (args.user.email && (await emailExists(args.user.email)))
-    throw new GraphQLError(EMAIL_ALREADY_EXISTS);
+  const currentUser = await UserModel.findById(id);
 
-  if (args.user.taxId && (await documentExists(args.user.taxId)))
-    throw new GraphQLError(DOCUMENT_ALREADY_EXISTS);
+  if (!currentUser) throw new GraphQLError('User not found');
 
+  if (email && email !== currentUser.email) {
+    const emailExists = await UserModel.findOne({ email });
+    if (emailExists) throw new GraphQLError(EMAIL_ALREADY_EXISTS);
+  }
+
+  if (taxId && taxId !== currentUser.tax_id) {
+    const taxIdExists = await UserModel.findOne({ tax_id: taxId });
+    if (taxIdExists) throw new GraphQLError(DOCUMENT_ALREADY_EXISTS);
+  }
+
+  // Se a senha for fornecida, criptografa e atualiza
   if (password) {
     const encryptedPassword = String(await encryptPassword(password));
 
-    const user = await UserModel.findByIdAndUpdate(
+    const updatedUser = await UserModel.findByIdAndUpdate(
       id,
-      { ...rest, password: encryptedPassword },
-      {
-        new: true,
-      }
+      { ...rest, email, tax_id: taxId, password: encryptedPassword },
+      { new: true }
     );
 
-    return { ...user, password: encryptedPassword };
+    return { ...updatedUser?.toObject(), password: encryptedPassword };
   }
 
-  const user = await UserModel.findByIdAndUpdate(id, rest);
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    id,
+    { ...rest, email, tax_id: taxId },
+    { new: true }
+  );
 
-  if (!user) return null;
+  if (!updatedUser) return null;
 
-  return user;
+  return updatedUser;
 };
+
 
 /**
  *  Find a user by email or tax id
