@@ -1,6 +1,6 @@
-import UserController from "@/controllers/user.controller";
 import User from "@/models/User";
-import { getUserWithAccount, me } from "@/services/user.service";
+import { getUserWithAccount, me, createUser, updateUser, userByEmailOrTaxId } from "@/user";
+import { loginUser, logoutUser } from "@/auth";
 
 const userResolver = {
   Query: {
@@ -11,7 +11,7 @@ const userResolver = {
       return await getUserWithAccount(id);
     },
     async userByEmailOrTaxId(_: any, { query }: any) {
-      return await UserController.searchUserByEmailOrTaxId(query);
+      return await userByEmailOrTaxId(query);
     },
     async me(_: any, args: any, ctx: any) {
       return await me(ctx.token);
@@ -19,22 +19,22 @@ const userResolver = {
   },
   Mutation: {
     async createUser(_: any, args: any, ctx: any) {
-      return await UserController.create(args);
+      return await createUser(args);
     },
     async updateUser(_: any, args: any) {
-      return await UserController.update(args);
+      return await updateUser(args);
     },
     async deleteUser(_: any, { id }: any) {
       return await User.findByIdAndDelete(id);
     },
     async login(_: any, args: any, ctx: any) {
-      return await UserController.login(args);
+      return await loginUser(args);
     },
     async logout(_: any, args: any, ctx: any) {
       const { token } = ctx;
       const tokenString = token.split(" ")[1];
 
-      return await UserController.logout(tokenString);
+      return await logoutUser(tokenString);
     },
   },
   User: {
