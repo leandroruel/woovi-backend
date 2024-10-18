@@ -9,7 +9,7 @@ import {
 } from "@/helpers/constants";
 import Account, { type IAccount } from "@/models/Account";
 import { GraphQLError } from "graphql";
-import { createTransaction, getTransaction } from "./transaction.service";
+import { createTransaction, getTransaction } from "@/transaction";
 
 /**
  * Create a new account
@@ -117,3 +117,11 @@ export const transferAmount = async (data: MutationTransferAmountArgs) => {
     throw new GraphQLError(error.message || "Failed to transfer amount.");
   }
 };
+
+/**
+ * Get a account by userid
+ * @param userId {string} the user id
+ * @returns {Account} the account of the user
+ */
+export const accountByUserId = async (userId: string) =>
+  await Account.findOne({ userId });

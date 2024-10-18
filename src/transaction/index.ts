@@ -1,4 +1,4 @@
-import { type CreateTransactionPayload } from "@/generated/graphql";
+import type { CreateTransactionPayload } from "@/generated/graphql";
 import Transaction from "@/models/Transaction";
 import { GraphQLError } from "graphql";
 

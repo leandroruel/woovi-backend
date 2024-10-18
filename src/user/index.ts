@@ -1,16 +1,24 @@
+import { createAccount, generateAccountNumber } from "@/account";
 import type {
-  CreateUserPayload,
-  MutationLoginArgs,
+  MutationCreateUserArgs,
+  MutationUpdateUserArgs,
   QueryUserByEmailOrTaxIdArgs,
   UpdateUserPayload,
 } from "@/generated/graphql";
-import { INVALID_PASSWORD, USER_NOT_FOUND } from "@/helpers/constants";
+import {
+  DOCUMENT_ALREADY_EXISTS,
+  EMAIL_ALREADY_EXISTS,
+} from "@/helpers/constants";
 import { decodeToken, signToken } from "@/helpers/jwt";
-import { verifyPassword } from "@/helpers/password";
+import { encryptPassword } from "@/helpers/password";
 import UserModel from "@/models/User";
+import {
+  validateUserCreate,
+  validateUserUpdate,
+} from "@/validators/user-schema";
 import { GraphQLError } from "graphql";
-import { revokeToken } from "./token.service";
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Check if email exists on database
@@ -35,8 +43,46 @@ export const documentExists = async (taxId: string): Promise<boolean> =>
  * @param body {Object} - user data
  * @returns
  */
-export const createUser = async (body: CreateUserPayload) =>
-  await UserModel.create({ ...body, tax_id: body.taxId });
+export const createUser = async (args: MutationCreateUserArgs) => {
+  const { password, taxId, ...rest } = args.user;
+
+  const { error } = await validateUserCreate.validateAsync(args, {
+    abortEarly: false,
+  });
+
+  if (error) throw new GraphQLError(error);
+
+  if (await emailExists(args.user.email))
+    throw new GraphQLError("Email already exists", {
+      extensions: { code: EMAIL_ALREADY_EXISTS },
+    });
+
+  if (await documentExists(args.user.taxId))
+    throw new GraphQLError("Document already exists", {
+      extensions: { code: DOCUMENT_ALREADY_EXISTS },
+    });
+
+  const encryptedPassword = String(await encryptPassword(password));
+
+  const { _id, ...user } = await UserModel.create({
+    ...rest,
+    password: encryptedPassword,
+    tax_id: taxId,
+  });
+
+  // Cria uma conta para o usuario novo
+  await createAccount({
+    userId: String(_id),
+    balance: 100,
+    idempotencyId: uuidv4(),
+    accountNumber: generateAccountNumber(),
+  });
+
+  return {
+    id: _id,
+    ...user,
+  };
+};
 
 /**
  *
@@ -45,58 +91,47 @@ export const createUser = async (body: CreateUserPayload) =>
  * @returns {Promise<Object>}
  */
 export const updateUser = async (
-  id: string,
-  input: UpdateUserPayload
-): Promise<object | null> =>
-  await UserModel.findByIdAndUpdate(
+  args: MutationUpdateUserArgs
+): Promise<object | null> => {
+  const {
     id,
-    { ...input, tax_id: input.taxId },
+    user: { password, ...rest },
+  } = args;
+
+  const { error } = await validateUserUpdate.validateAsync(
+    { user: rest },
     {
-      new: true,
+      abortEarly: false,
     }
   );
 
-/**
- *  Authenticates a user and return a JWT Token
- * @param args {MutationLoginArgs} - user data
- * @returns {Promise<any>} - token and user data
- */
-export const loginUser = async (args: MutationLoginArgs): Promise<any> => {
-  const {
-    input: { email, password },
-  } = args;
+  if (error) throw new GraphQLError(error);
 
-  const user = await UserModel.findOne({ email });
+  if (args.user.email && (await emailExists(args.user.email)))
+    throw new GraphQLError(EMAIL_ALREADY_EXISTS);
 
-  if (!user)
-    throw new GraphQLError(USER_NOT_FOUND, {
-      extensions: { code: "USER_NOT_FOUND" },
-    });
+  if (args.user.taxId && (await documentExists(args.user.taxId)))
+    throw new GraphQLError(DOCUMENT_ALREADY_EXISTS);
 
-  const isValidPassword = await verifyPassword(password, user.password);
+  if (password) {
+    const encryptedPassword = String(await encryptPassword(password));
 
-  if (!isValidPassword) {
-    throw new GraphQLError(INVALID_PASSWORD, {
-      extensions: { code: "INVALID_PASSWORD" },
-    });
+    const user = await UserModel.findByIdAndUpdate(
+      id,
+      { ...rest, password: encryptedPassword },
+      {
+        new: true,
+      }
+    );
+
+    return { ...user, password: encryptedPassword };
   }
 
-  const token = signToken({ userId: user.id, role: user.role }) || "";
+  const user = await UserModel.findByIdAndUpdate(id, rest);
 
-  return {
-    token,
-  };
-};
+  if (!user) return null;
 
-/**
- * Logout a user and revoke the token
- * @param token {string} - token to revoke
- * @returns {boolean} - true if token was revoked
- */
-export const logoutUser = async (token: string) => {
-  if (!token) return false;
-
-  return await revokeToken(token);
+  return user;
 };
 
 /**

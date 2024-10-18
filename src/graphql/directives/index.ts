@@ -1,7 +1,7 @@
 import { AuthorizationError } from "@/helpers/errors";
 import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
 import { defaultFieldResolver, type GraphQLSchema } from "graphql";
-import { tokenExists } from "@/services/token.service";
+import { tokenExists } from "@/auth";
 
 function authDirective(
   directiveName: string,

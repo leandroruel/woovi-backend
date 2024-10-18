@@ -1,4 +1,4 @@
-import { getTransactionsByUserId } from "@/services/transaction.service";
+import { getTransactionsByUserId } from "@/transaction"
 
 const transationResolver = {
   Query: {
