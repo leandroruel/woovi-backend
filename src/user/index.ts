@@ -45,7 +45,7 @@ export const createUser = async (args: MutationCreateUserArgs) => {
 
   const encryptedPassword = String(await encryptPassword(password));
 
-  const { _id, ...user } = await UserModel.create({
+  const { _id, password: pass, ...user } = await UserModel.create({
     ...rest,
     password: encryptedPassword,
     tax_id: taxId,
