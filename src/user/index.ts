@@ -64,6 +64,7 @@ export const createUser = async (args: MutationCreateUserArgs) => {
     ...user,
   };
 };
+
 /**
  * Atualiza um usuário
  * @param args {MutationUpdateUserArgs} campos a serem atualizados
@@ -87,7 +88,7 @@ export const updateUser = async (
 
   const currentUser = await UserModel.findById(id);
 
-  if (!currentUser) throw new GraphQLError('User not found');
+  if (!currentUser) throw new GraphQLError("User not found");
 
   if (email && email !== currentUser.email) {
     const emailExists = await UserModel.findOne({ email });
@@ -122,7 +123,6 @@ export const updateUser = async (
 
   return updatedUser;
 };
-
 
 /**
  *  Find a user by email or tax id
