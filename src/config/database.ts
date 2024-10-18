@@ -45,14 +45,14 @@ const MONGO_APP_NAME = process.env.MONGO_APP_NAME || "myapp";
 
 /**
  * MongoDB URI
- * @constant {string} MONGO_URI - The URI to connect to MongoDB
+ * @constant {string} MONGO_URL - The URI to connect to MongoDB
  */
-const MONGO_URI = process.env.MONGO_URI || "";
+const MONGO_URL = process.env.MONGO_URL || "";
 
 /**
- * MongoDB URL, if products use MONGO_URI, otherwise construct the URL from the config
+ * MongoDB URL, if products use MONGO_URL, otherwise construct the URL from the config
  * @constant {string} MONGODB_URL - The URL to connect to MongoDB
  */
 export const MONGODB_URL: string = isProduction
-  ? MONGO_URI
+  ? MONGO_URL
   : `mongodb://${config.database.username}:${config.database.password}@${config.database.host}:${config.database.port}/${config.database.name}?authSource=admin`;
