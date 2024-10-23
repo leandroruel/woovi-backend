@@ -14,8 +14,12 @@ RUN
 # Expõe a porta 4000
 EXPOSE 4000
 
-# Set timezone
-ENV TZ America/Sao_Paulo
+# Set timezone using TIMEZONE variable
+ARG TIMEZONE=America/Sao_Paulo
+ENV TZ=${TIMEZONE}
+RUN apk add --no-cache tzdata \
+    && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo "${TZ}" > /etc/timezone
 
 # Comando de inicialização do aplicativo
 CMD ["sh", "-c", "yarn install && yarn dev"]
